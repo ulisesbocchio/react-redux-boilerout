@@ -38,9 +38,9 @@ MIT ©2017 [Ulises Bocchio](http://github.com/ulisesbocchio)
 [issues-url]: https://github.com/ulisesbocchio/react-redux-boilerout/issues
 [pr-image]: https://img.shields.io/github/issues-pr/ulisesbocchio/react-redux-boilerout.svg
 [pr-url]: https://github.com/ulisesbocchio/react-redux-boilerout/pulls
-[license-image]: http://img.shields.io/:license-mit-blue.svg?style=flat-square
+[license-image]: http://img.shields.io/:license-mit-blue.svg
 [license-url]: http://badges.mit-license.org
-[badges-image]: http://img.shields.io/:badges-10/10-ff6799.svg?style=flat-square
+[badges-image]: http://img.shields.io/:badges-10/10-ff6799.svg
 [badges-url]: https://github.com/ulisesbocchio/react-redux-boilerout
 [gitter-image]: https://badges.gitter.im/ulisesbocchio/react-redux-boilerout.svg
 [gitter-url]: https://gitter.im/ulisesbocchio/react-redux-boilerout?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge

@@ -1,8 +1,6 @@
 import { generateActionCreators } from '../src'
 
 describe('Generate Action Creator Tests', () => {
-  describe('compose', () => {
-
     it('checks actual actions are created', () => {
       const actionCreators = generateActionCreators('update', 'remove', 'SOME_ACTION');
       expect(actionCreators).toHaveProperty('update');
@@ -29,5 +27,4 @@ describe('Generate Action Creator Tests', () => {
         variants: ['updateSomething', 'onUpdateSomething']
       })
     });
-  })
 });
