@@ -55,7 +55,7 @@
   },
   "homepage": "https://github.com/ulisesbocchio/react-redux-boilerout",
   "peerDependencies": {
-    "react-redux": "^4.0.0",
+    "react-redux": "^4.0.0 || ^5.0.0",
     "redux": "^2.0.0 || ^3.0.0"
   },
   "dependencies": {
@@ -98,7 +98,7 @@
     "eslint-config-react-app": "^1.0.4",
     "eslint-plugin-flowtype": "^2.29.2",
     "eslint-plugin-import": "^2.2.0",
-    "eslint-plugin-jsx-a11y": "^5.0.3",
+    "eslint-plugin-jsx-a11y": "^5.1.1",
     "eslint-plugin-react": "^7.1.0",
     "gitbook-cli": "^2.3.0",
     "glob": "^7.1.1",
