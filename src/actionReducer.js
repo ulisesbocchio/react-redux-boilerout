@@ -1,6 +1,8 @@
 function getClassMethods(instance) {
-  return Object.getOwnPropertyNames(Object.getPrototypeOf(instance))
-    .filter(m => m !== 'constructor');
+  return [
+    ...Object.getOwnPropertyNames(Object.getPrototypeOf(instance)),
+    ...Object.getOwnPropertyNames(instance).filter(f => typeof instance[f] === 'function')
+  ].filter(m => m !== 'constructor');
 }
 
 export default function actionReducer(name) {

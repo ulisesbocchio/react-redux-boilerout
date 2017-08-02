@@ -69,6 +69,7 @@
     "babel-plugin-check-es2015-constants": "^6.3.13",
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-plugin-syntax-jsx": "^6.3.13",
+    "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-decorators-legacy": "^1.2.0",
     "babel-plugin-transform-es2015-arrow-functions": "^6.3.13",
     "babel-plugin-transform-es2015-block-scoped-functions": "^6.3.13",

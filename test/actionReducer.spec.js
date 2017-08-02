@@ -9,6 +9,14 @@ describe('Action Reducer Tests', () => {
       someOtherMethod(){}
     }
 
+  class B {
+    constructor() {
+      this.someField = 0;
+    }
+    someMethod = () => {};
+    someOtherMethod = () => {};
+  }
+
     it('checks attributes in created object', () => {
       const reducer = actionReducer('a')(A);
 
@@ -23,6 +31,21 @@ describe('Action Reducer Tests', () => {
       expect(reducer.selector).toEqual(expect.any(Function));
       expect(reducer.methods).toEqual(['someMethod', 'someOtherMethod']);
     });
+
+  it('checks attributes in created object with class props', () => {
+    const reducer = actionReducer('b')(B);
+
+    expect(reducer).toHaveProperty('name');
+    expect(reducer).toHaveProperty('clazz');
+    expect(reducer).toHaveProperty('reducer');
+    expect(reducer).toHaveProperty('methods');
+
+    expect(reducer.name).toEqual('b');
+    expect(reducer.clazz).toEqual(B);
+    expect(reducer.reducer).toEqual(expect.any(B));
+    expect(reducer.selector).toEqual(expect.any(Function));
+    expect(reducer.methods).toEqual(['someMethod', 'someOtherMethod']);
+  });
 
   it('checks selector in created object', () => {
     const reducer = actionReducer('a')(A);

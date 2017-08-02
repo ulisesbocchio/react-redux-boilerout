@@ -1,54 +1,21 @@
 import { actionReducersEnhancer, actionReducer, generateActionDispatchers, connectActionReducer } from '../src';
 import { createStore } from 'redux';
 import React from 'react';
-import PropTypes from 'prop-types';
 
-const Todo = ({ onClick, completed, text }) => (
-  <li
-    onClick={onClick}
-    style={{
-      textDecoration: completed ? 'line-through' : 'none'
-    }}
+const SillyComp = ({ start, stop,  started, message }) => (
+  <div
+    onClick={() => started ? stop() : start()}
   >
-    {text}
-  </li>
+    {message}
+  </div>
 );
-
-Todo.propTypes = {
-  onClick: PropTypes.func.isRequired,
-  completed: PropTypes.bool.isRequired,
-  text: PropTypes.string.isRequired
-};
-
-
-const TodoList = ({ todos, toggleTodo }) => (
-  <ul>
-    {todos.map(todo =>
-      <Todo
-        key={todo.id}
-        {...todo}
-        onClick={() => toggleTodo(todo.id)}
-      />
-    )}
-  </ul>
-);
-
-TodoList.propTypes = {
-  todos: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    completed: PropTypes.bool.isRequired,
-    text: PropTypes.string.isRequired
-  }).isRequired).isRequired,
-  toggleTodo: PropTypes.func.isRequired
-};
 
 describe('Connect Action Reducers Tests', () => {
   class A {
-    constructor() {
-      this.someField = 0;
-    }
-    someMethod(){}
-    someOtherMethod(){}
+    initialState = () => ({message: 'what\'s up?', started: false});
+    start = () => ({message: 'hello', started: true});
+    stop = () => ({message: 'bye', started: false});
+    nothing = state => state;
   }
 
   it('checks connectActionReducer creates component', () => {
@@ -64,7 +31,7 @@ describe('Connect Action Reducers Tests', () => {
         actions: theActions
       },
       (s, p) => p
-    )(TodoList);
+    )(SillyComp);
   });
 });
 
