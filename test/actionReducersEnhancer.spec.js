@@ -1,5 +1,5 @@
-import { actionReducersEnhancer, actionReducer, generateActionCreators } from '../src';
-import { createStore, applyMiddleware, compose } from 'redux';
+import { actionReducersEnhancer, actionReducer, generateActionDispatchers } from '../src';
+import { createStore } from 'redux';
 
 describe('Action Reducers Enhancer Tests', () => {
   class A {
@@ -17,7 +17,7 @@ describe('Action Reducers Enhancer Tests', () => {
   it('checks enhancer returns a store', () => {
     const enhancer = actionReducersEnhancer();
     const actionReducers = [actionReducer('a')(A)];
-    const actionCreators = [generateActionCreators('start', 'stop')];
+    const actionCreators = [generateActionDispatchers('start', 'stop')];
     const store = createStore({ actionReducers, actionCreators }, enhancer);
     expect(store).toHaveProperty('dispatch');
     expect(store).toHaveProperty('getState');

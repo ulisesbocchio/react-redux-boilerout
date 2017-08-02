@@ -1,15 +1,15 @@
-import generateActionCreators from './generateActionCreators';
+import generateActionDispatchers from './generateActionDispatchers';
 import actionReducersEnhancer from './actionReducersEnhancer';
 import connectActionReducer from './connectActionReducer';
 import actionReducer from './actionReducer';
 import combineActionReducers from './combineActionReducers';
-import bindAllActionCreators from './bindAllActionCreators';
+import bindAllActionDispatchers from './bindAllActionDispatchers';
 
 export {
-  generateActionCreators,
+  generateActionDispatchers,
   actionReducersEnhancer,
   connectActionReducer,
   actionReducer,
   combineActionReducers,
-  bindAllActionCreators
+  bindAllActionDispatchers
 }

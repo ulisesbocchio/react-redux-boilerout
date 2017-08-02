@@ -7,7 +7,7 @@ function createSubtreeReducer({ reducer, methods }) {
   const methodCache = {};
   const findMethod = action => {
     if (!(action.type in methodCache)) {
-      methodCache[action.type] = action.variants && methods.find(key => action.variants.includes(key));
+      methodCache[action.type] = methods.find(key => action.variants ? action.variants.includes(key) : key === action.type);
     }
     return methodCache[action.type];
   };
