@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "clean": "rimraf lib dist es coverage",
-    "lint": "eslint src test build",
+    "lint": "eslint src test",
     "test": "cross-env BABEL_ENV=commonjs jest",
     "test:watch": "npm test -- --watch",
     "test:cov": "npm test -- --coverage",
@@ -22,14 +22,7 @@
     "build:umd": "cross-env BABEL_ENV=es NODE_ENV=development rollup -c -i src/index.js -o dist/redux.js",
     "build:umd:min": "cross-env BABEL_ENV=rollup NODE_ENV=production rollup -c -i src/index.js -o dist/redux.min.js",
     "build": "npm run build:commonjs && npm run build:es && npm run build:umd && npm run build:umd:min",
-    "prepare": "npm run clean && npm run lint && npm test && npm run build",
-    "examples:lint": "eslint examples",
-    "examples:test": "cross-env CI=true babel-node examples/testAll.js",
-    "docs:clean": "rimraf _book",
-    "docs:prepare": "gitbook install",
-    "docs:build": "npm run docs:prepare && gitbook build -g reactjs/redux && cp logo/apple-touch-icon.png _book/gitbook/images/apple-touch-icon-precomposed-152.png && cp logo/favicon.ico _book/gitbook/images",
-    "docs:watch": "npm run docs:prepare && gitbook serve",
-    "docs:publish": "npm run docs:clean && npm run docs:build && cp CNAME _book && cd _book && git init && git commit --allow-empty -m 'update book' && git checkout -b gh-pages && touch .nojekyll && git add . && git commit -am 'update book' && git push git@github.com:reactjs/redux gh-pages --force"
+    "prepare": "npm run clean && npm run lint && npm test && npm run build"
   },
   "repository": {
     "type": "git",
@@ -47,7 +40,9 @@
     "replay",
     "flux",
     "elm",
-    "boilerplate"
+    "boilerplate",
+    "react",
+    "reactjs"
   ],
   "authors": [
     "Uli Bocchio <ubocchio@me.com> (https://github.com/ulisesbocchio)"
