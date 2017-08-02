@@ -15,9 +15,12 @@ function normalizeActionName(type) {
 }
 
 export default function generateActionCreators(...actions) {
-  return Object.assign({}, ...actions.map(action => ({[normalizeActionName(action)]: (...args) => ({
-    type: action,
-    payload: args,
-    variants: actionVariants(action)
-  })})));
+  return Object.assign({}, ...actions.map(action => {
+    const variants = actionVariants(action);
+    return {[normalizeActionName(action)]: (...args) => ({
+      type: action,
+      payload: args,
+      variants
+    })}
+  }));
 }
