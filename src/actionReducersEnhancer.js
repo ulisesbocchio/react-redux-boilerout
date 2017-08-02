@@ -1,50 +1,19 @@
-import { combineReducers, bindActionCreators } from 'redux';
+import bindAllActionCreators from './bindAllActionCreators';
+import combineActionReducers from './combineActionReducers';
 
-function createSubtreeReducer({ reducer, methods }) {
-    const methodCache = {};
-    const findMethod = action => {
-        if (!(action.type in methodCache)) {
-            methodCache[action.type] = action.variants && methods.find(key => action.variants.includes(key));
-        }
-        return methodCache[action.type];
-    };
-    return (subtreeState, action) => {
-        //eslint-disable-next-line no-undefined
-        if (subtreeState === undefined) {
-            return reducer.initialState();
-        }
-        const reducerMethod = findMethod(action);
-        if (reducerMethod) {
-            return reducer[reducerMethod].bind(reducer)(...action.payload, subtreeState);
-        }
-        return subtreeState;
-    };
-}
-
-function objectMap(obj, mapFn) {
-    return Object.assign({}, ...Object.entries(obj).map(([key, val]) => ({[key]: mapFn(val)})));
-}
-
-function combineAllReducers(actionReducers) {
-    const reducersMap = Object.assign({}, ...actionReducers.map(actionReducer => ({[actionReducer.name]: actionReducer})));
-    const storeReducers = objectMap(reducersMap, actionReducer => createSubtreeReducer(actionReducer));
-    return combineReducers(storeReducers);
-}
-
-function bindAllActionCreators(actionCreators, dispatch) {
-    const boundActionCreators = actionCreators.map(ac => bindActionCreators(ac, dispatch));
-    actionCreators.forEach((actionCreator, i) => {
-        const boundActionCreator = boundActionCreators[i];
-        Object.keys(actionCreator).forEach(key => {
-            actionCreator[key] = boundActionCreator[key];
-            actionCreator[key].defer = (...args) => setTimeout(() => actionCreator[key](...args));
-        });
-    });
+function assertArg(cond, errorMessage) {
+  if (!cond) {
+    throw new Error(errorMessage);
+  }
 }
 
 export default function actionReducersEnhancer() {
-    return (createStore) => ({actionReducers, actionCreators}, preloadedState, enhancer) => {
-        const storeReducer = combineAllReducers(actionReducers);
+    return (createStore) => (mainReducer, preloadedState, enhancer) => {
+        assertArg(typeof mainReducer === 'object' && mainReducer !== null, 'Expecting first argument to be an object');
+        const { actionReducers, actionCreators = []} = mainReducer;
+        assertArg(Array.isArray(actionReducers) && actionReducers.length, 'Expecting actionReducers to be an array with at least one action reducer');
+        assertArg(Array.isArray(actionReducers), 'Expecting actionReducers to be an array');
+        const storeReducer = combineActionReducers(actionReducers);
         const store = createStore(storeReducer, preloadedState, enhancer);
         bindAllActionCreators(actionCreators, store.dispatch);
         return store;

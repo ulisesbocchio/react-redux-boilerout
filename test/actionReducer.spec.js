@@ -20,6 +20,14 @@ describe('Action Reducer Tests', () => {
       expect(reducer.name).toEqual('a');
       expect(reducer.clazz).toEqual(A);
       expect(reducer.reducer).toEqual(expect.any(A));
+      expect(reducer.selector).toEqual(expect.any(Function));
       expect(reducer.methods).toEqual(['someMethod', 'someOtherMethod']);
     });
+
+  it('checks selector in created object', () => {
+    const reducer = actionReducer('a')(A);
+
+    expect(reducer.selector({a: 'hi'})).toEqual('hi');
+    expect(reducer.selector({b: 'hi'})).toBeUndefined();
+  });
 });
