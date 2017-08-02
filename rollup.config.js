@@ -16,7 +16,8 @@ const config = {
   globals: {
     'react': 'React',
     'redux': 'Redux',
-    'reselect': 'Reselect'
+    'reselect': 'Reselect',
+    'react-redux': 'ReactRedux'
   },
   format: 'umd',
   moduleName: 'ReactReduxBoilerOut',

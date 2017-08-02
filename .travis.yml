@@ -4,6 +4,7 @@ node_js:
 before_install:
   - npm i -g npm
 script:
+  - npm run check:src
   - npm run build
 branches:
   only:

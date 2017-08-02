@@ -16,6 +16,7 @@ export default function connectActionReducer({actionReducer, actions, inject}, m
     };
 
     const mapStateToPropsCreator = () => createSelector([actionReducer.selector, (s, p) => p], mapStateToProps);
+    //eslint-disable-next-line no-unused-vars
     const mapDispatchToPropsCreator = () => createSelector([(d, p) => d, (d, p) => p], mapDispatchToProps);
 
     return connect(

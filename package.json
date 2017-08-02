@@ -17,13 +17,14 @@
     "test": "cross-env BABEL_ENV=commonjs jest",
     "test:watch": "npm test -- --watch",
     "test:cov": "npm test -- --coverage",
+    "check:src": "npm run lint && npm run test:cov",
     "cov:open": "[ -d ./coverage ] || npm run test:cov && opn ./coverage/lcov-report/index.html",
     "build:commonjs": "cross-env BABEL_ENV=commonjs babel src --out-dir lib",
     "build:es": "cross-env BABEL_ENV=es babel src --out-dir es",
     "build:umd": "cross-env BABEL_ENV=es NODE_ENV=development rollup -c -i src/index.js -o dist/react-redux-boilerout.js",
     "build:umd:min": "cross-env BABEL_ENV=rollup NODE_ENV=production rollup -c -i src/index.js -o dist/react-redux-boilerout.min.js",
     "build": "npm run build:commonjs && npm run build:es && npm run build:umd && npm run build:umd:min",
-    "prepare": "npm run clean && npm run lint && npm test && npm run build"
+    "prepublish": "npm run clean && npm run lint && npm test && npm run build && check-es3-syntax lib/ dist/ --kill --print"
   },
   "repository": {
     "type": "git",
@@ -91,6 +92,7 @@
     "babel-plugin-transform-object-rest-spread": "^6.3.13",
     "babel-plugin-transform-react-jsx": "^6.4.0",
     "babel-register": "^6.3.13",
+    "check-es3-syntax-cli": "^0.2.0",
     "cross-env": "^5.0.1",
     "eslint": "^4.0.0",
     "eslint-config-react-app": "^1.0.4",
