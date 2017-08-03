@@ -120,7 +120,7 @@ Each method of the class receives the arguments passed to the action dispatcher 
 is the current `state`. The method must then return the new state of the **slice**, just like you would with a regular reducer,
 without mutating the current state of course, instead you need to make sure it's a new instance with the appropriate changes.
 
-For the above example With an empty preloaded state, after calling initial state of this reducer, the entire app state would look like this:
+For the above example with an empty preloaded state, the store would be initialized with:
 
 ```js
 {
@@ -130,7 +130,7 @@ For the above example With an empty preloaded state, after calling initial state
     }
 }
 ```
-And after calling `TodosActions.setVisibilityFilter('ACTIVCE')`, `TodosActions.addTodo('Buy Beer')`, `TodosActions.toggleTodo(1)`
+And after calling `TodosActions.setVisibilityFilter('ACTIVCE')`, `TodosActions.addTodo('Buy Beer')` and `TodosActions.toggleTodo(1)`
 it would look like this:
 ```js
  {
@@ -271,7 +271,7 @@ const enhancer = compose(
 );
 ```
 
-And inject it into your `Provider`
+Last step is to inject the store into your `Provider`
 
 `AppProvider.js`
 ```js
@@ -290,8 +290,8 @@ export default AppProvider;
 ```
 ## Example
 
-Head on to [redux-todos](https://github.com/ulisesbocchio/redux-todos) for a working sample of `redux`'s example implemented
-using this library.
+Head on to [redux-todos](https://github.com/ulisesbocchio/redux-todos) for a working version of `redux`'s [todos](https://github.com/reactjs/redux/tree/master/examples/todos) example implemented
+using `react-redux-boilerout`.
 
 ## API Docs
 
@@ -323,10 +323,11 @@ when dispatching actions.
 **Returns** a slice reducer wrapping an instance of `ActionReducerClass`
 
 ##### Example:
+Given the followin action:
 ```js
 Actions.sayHello('E.T.', 'call', 'home');
 ```
-the following `action reducer` will transform the state for the slice `earth`:
+the following `action reducer` will transform the state for the slice `earth` when `sayHello` is dispatched:
 ```js
 class HearthReducer {
     sayHello(who, did, what, state) {
@@ -336,7 +337,7 @@ class HearthReducer {
 
 const earthReducer = actionReducer('earth')(HearthReducer);
 ```
-For actions declared `UPPER_CASE` methods map to their `camelCase` counterpart. Also action reducers methods can be named
+For actions declared with `UPPER_CASE` style, action reducer methods map to their `camelCase` counterpart. Also action reducers methods can be named
 starting with `on + ActionName`.
 For instance, methods named `onSayHello` and `sayHello` will listen to action `SAY_HELLO` or `sayHello`.
 
