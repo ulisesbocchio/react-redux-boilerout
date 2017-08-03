@@ -1,7 +1,6 @@
 [![Build Status][travis-image]][travis-url]
 [![NPM version][npm-image]][npm-url]
 [![CDNJS version][cdnjs-svg]][npm-url]
-
 [![Code Climate][codeclimate-image]][codeclimate-url]
 [![Coverage Status][coverage-image]][coverage-url]
 [![Coverage Issues Status][coverage-issues-image]][coverage-issues-url]
