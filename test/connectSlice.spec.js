@@ -1,4 +1,4 @@
-import { actionReducersEnhancer, actionReducer, generateActionDispatchers, connectSlice } from '../src';
+import { actionReducersEnhancer, sliceReducer, generateActionDispatchers, connectSlice } from '../src';
 import { createStore } from 'redux';
 import React from 'react';
 import { Provider } from 'react-redux';
@@ -12,7 +12,7 @@ const SillyComp = ({ start, stop,  started, message }) => (
   </div>
 );
 
-describe('Connect Action Reducers Tests', () => {
+describe('Connect Slice Reducers Tests', () => {
   class A {
     initialState = () => ({message: 'what\'s up?', started: false});
     start = () => ({message: 'hello', started: true});
@@ -22,11 +22,11 @@ describe('Connect Action Reducers Tests', () => {
 
   it('checks connectSlice creates component', () => {
     const enhancer = actionReducersEnhancer();
-    const aReducer = actionReducer('a')(A);
-    const actionReducers = [aReducer];
+    const aReducer = sliceReducer('a')(A);
+    const sliceReducers = [aReducer];
     const theActions = generateActionDispatchers('start', 'stop');
     const actionCreators = [theActions];
-    const store = createStore({ actionReducers, actionCreators }, enhancer);
+    const store = createStore({ sliceReducers, actionCreators }, enhancer);
 
     const Container = connectSlice({
         slice: 'a',

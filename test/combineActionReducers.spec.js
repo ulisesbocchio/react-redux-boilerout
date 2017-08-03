@@ -1,4 +1,4 @@
-import { combineActionReducers, actionReducer } from '../src'
+import { combineActionReducers, sliceReducer } from '../src'
 
 describe('Combine Action Reducers Tests', () => {
   class A {
@@ -18,28 +18,28 @@ describe('Combine Action Reducers Tests', () => {
   }
 
   it('checks it returns one reducer', () => {
-    const actionReducers = [
-      actionReducer('a')(A),
-      actionReducer('b')(B)
+    const sliceReducers = [
+      sliceReducer('a')(A),
+      sliceReducer('b')(B)
     ];
-    const reducer = combineActionReducers(actionReducers);
+    const reducer = combineActionReducers(sliceReducers);
     expect(reducer).toEqual(expect.any(Function));
   });
 
   it('checks it fails with invalid reducers', () => {
-    const actionReducers = [
-      actionReducer('a', A),
-      actionReducer('b', B)
+    const sliceReducers = [
+      sliceReducer('a', A),
+      sliceReducer('b', B)
     ];
-    expect(() => combineActionReducers(actionReducers)).toThrowError(/Invalid object passed as action reducer/);
+    expect(() => combineActionReducers(sliceReducers)).toThrowError(/Invalid object passed as action reducer/);
   });
 
   it('should map state to keys', () => {
-    const actionReducers = [
-      actionReducer('a')(A),
-      actionReducer('b')(B)
+    const sliceReducers = [
+      sliceReducer('a')(A),
+      sliceReducer('b')(B)
     ];
-    const reducer = combineActionReducers(actionReducers);
+    const reducer = combineActionReducers(sliceReducers);
 
     let newState = reducer({a:{}, b: {}}, {type: 'one', payload:['a']});
     expect(newState).toEqual({a: 1, b: {}});
@@ -55,11 +55,11 @@ describe('Combine Action Reducers Tests', () => {
   });
 
   it('should cover else branch on cache logic when call same action twice', () => {
-    const actionReducers = [
-      actionReducer('a')(A),
-      actionReducer('b')(B)
+    const sliceReducers = [
+      sliceReducer('a')(A),
+      sliceReducer('b')(B)
     ];
-    const reducer = combineActionReducers(actionReducers);
+    const reducer = combineActionReducers(sliceReducers);
 
     let newState = reducer({a:{}, b: {}}, {type: 'one', payload:['a']});
     expect(newState).toEqual({a: 1, b: {}});
@@ -69,34 +69,34 @@ describe('Combine Action Reducers Tests', () => {
   });
 
   it('should use variant', () => {
-    const actionReducers = [
-      actionReducer('a')(A),
-      actionReducer('b')(B)
+    const sliceReducers = [
+      sliceReducer('a')(A),
+      sliceReducer('b')(B)
     ];
-    const reducer = combineActionReducers(actionReducers);
+    const reducer = combineActionReducers(sliceReducers);
 
     const newState = reducer({a:{}, b: {}}, {type: 'TWO', payload:['a'], variants: ['two', 'onTwo']});
     expect(newState).toEqual({a: 'a', b: 'magic'});
   });
 
   it('should use initialState', () => {
-    const actionReducers = [
-      actionReducer('a')(A),
-      actionReducer('b')(B)
+    const sliceReducers = [
+      sliceReducer('a')(A),
+      sliceReducer('b')(B)
     ];
-    const reducer = combineActionReducers(actionReducers);
+    const reducer = combineActionReducers(sliceReducers);
 
     const newState = reducer();
     expect(newState).toEqual({a: 999, b: {}});
   });
 
   it('should use initialState no static', () => {
-    const actionReducers = [
-      actionReducer('a')(A),
-      actionReducer('b')(B),
-      actionReducer('c')(C)
+    const sliceReducers = [
+      sliceReducer('a')(A),
+      sliceReducer('b')(B),
+      sliceReducer('c')(C)
     ];
-    const reducer = combineActionReducers(actionReducers);
+    const reducer = combineActionReducers(sliceReducers);
 
     const newState = reducer();
     expect(newState).toEqual({a: 999, b: {}, c: 666});

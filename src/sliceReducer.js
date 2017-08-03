@@ -29,7 +29,7 @@ function createSliceReducer({ reducer, methods, slice, reducerClass }) {
   return sliceReducer;
 }
 
-export default function actionReducer(slice) {
+export default function sliceReducer(slice) {
   return (reducerClass) => {
     const instance = new reducerClass();
     return createSliceReducer({
