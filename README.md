@@ -111,12 +111,16 @@ class TodosReducer {
 export default actionReducer('todos')(TodosReducer);
 
 ```
-And don't forget to export using the `actionReducer` HOF for which the first call receives the store subtree name that
+And don't forget to export using the `actionReducer` HOF for which the first call receives the store **slice** name that
 it will listen to, just like you would with `combineReducers` and on the second call provide the class being used as actions
 reducer.
-The initial state of the state subtree is defined with the special function `initialState`.
+The initial state of the **slice** is defined with the special function `initialState`.
 
-With an empty `preloadedState`, after calling initial state of this reducer, the entire app state would look like this:
+Each method of the class receives the arguments passed to the action dispatcher when it was called, and the last argument
+is the current `state`. The method must then return the new state of the **slice**, just like you would with a regular reducer,
+without mutating the current state of course, instead you need to make sure it's a new instance with the appropriate changes.
+
+For the above example With an empty preloaded state, after calling initial state of this reducer, the entire app state would look like this:
 
 ```js
 {
@@ -142,8 +146,8 @@ it would look like this:
 ```
 ### With action dispatchers and action reducers in place, you can now connect them to your components
 
-Using a similar approach to `redux`'s `connect` HOC, `react-redux-boilerout` provides `connectActionReducer` to connect
-your component to a specific subtree of the state directly, without worrying about doing the selection with boilerplate.
+Using a similar approach to `react-redux`'s `connect` HOC, `react-redux-boilerout` provides `connectActionReducer` to connect
+your component to a specific **slice** of the state directly, without having to write the selection boilerplate.
 
 `TodoListContainer.js`
 ```js
@@ -165,23 +169,67 @@ const getVisibleTodos = (todos, filter) => {
     }
 };
 
-const mapStoreStateToProps = (state) => ({
-    todos: getVisibleTodos(state.items, state.filter)
+const mapSliceStateToProps = (slice) => ({
+    todos: getVisibleTodos(slice.items, slice.filter)
 });
-
-const inject = {};
 
 const VisibleTodoList = connectActionReducer({
         actionReducer: TodosReducer,
-        actions: TodosActions,
-        inject
+        actions: TodosActions
     },
-    mapStoreStateToProps
+    mapSliceStateToProps
 )(TodoList);
 
 export default VisibleTodoList
 ```
+Here, on the `connectActionReducer` call we listen to the `todos` **slice** of the store by specifying:
+```js
+actionReducer: TodosReducer
+```
+And we are mapping the `TodosActions` action dispatchers to props in the target component with:
+```js
+actions: TodosActions
+```
+We also pass a `mapSliceStateToProps` function that we use to narrow down the store slice to the props the specific
+component needs in the same fashion of `redux`'s `mapStateToProps` but with the difference that this function will receive
+the **slice** mapped by `TodosReducer` only. ***`mapSliceStateToProps` is an optional argument***, that if not passed
+the target component will get the entire store **slice** as props.
 
+Another optional argument that you can pass after `mapSliceStateToProps` is `mapDispatchToProps` shown in the next example:
+
+`FilterLinkContainer.js`
+```js
+import { connectActionReducer } from 'react-redux-boilerout';
+import TodosActions from './TodosActions';
+import TodosReducer from './TodosReducer';
+import FilterLink from './FilterLink';
+
+const mapSliceStateToProps = (state, ownProps) => ({
+  active: ownProps.filter === state.filter
+});
+
+const mapDispatchToProps = (dispatch, ownProps) => ({
+  onClick: () => {
+      TodosActions.setVisibilityFilter(ownProps.filter);
+  }
+});
+
+const FilterLinkContainer = connectActionReducer({
+    actionReducer: TodosReducer
+  },
+    mapSliceStateToProps,
+    mapDispatchToProps
+)(FilterLink);
+
+export default FilterLinkContainer
+```
+Here, we basically bind a prop `onClick` to the target component that will dispatch an action, just like you would
+with vanilla `react-redux`, except that we don't have to wrap the call with dispatch. The `dispatch` argument is there
+just in case you need it. 
+
+### Wait a second, won't `onClick` create a new function every time and trigger al re-render?
+ Fortunately no, `mapSliceStateToProps` and `mapDispatchToProps` are wrapped with `reselect` and provided to `redux`
+ as functions so each component instance will memoize the props properly.
 
 ### Finally, initialize `redux` with a special enhancer that binds it all together
 
@@ -240,7 +288,103 @@ const AppProvider = () => (
 
 export default AppProvider;
 ```
+## Example
 
+Head on to [redux-todos](https://github.com/ulisesbocchio/redux-todos) for a working sample of `redux`'s example implemented
+using this library.
+
+## API Docs
+
+### `function generateActionDispatchers(...actions): <object>`
+Generates an object that maps the action names to function properties that are action dispatchers.
+If the actions are in the form of `ACTION_NAME` the dispatcher functions are normalized to the `actionName` form (camelCase).
+For each action, let's say 'sayHello' the resulting function property will also have a `defer` version that will dispatch
+the action asynchronously.
+ 
+##### Arguments:
+* actions: an arbitrary list of strings to generate the action dispatchers.
+
+**Returns** an object with the dispatcher function attributes
+
+##### Example:
+```js
+const Actions = generateActionDispatchers('SAY_HELLO');
+Actions.sayHello('Hi There!'); //dispatch action synchronously
+Actions.sayHello.defer('Hi There!'); //dispatch action asynchronously
+```
+### `function actionReducer(slice): function (ActionReducerClass): <reducer>`
+Generates a reducer function for the `slice` portion of the store that will use `class instance` of the provided class
+that upon execution on action dispatch it will select the appropriate method based on the action's `type`
+when dispatching actions.
+##### Arguments:
+* slice: the slice the reducer will map, as a string.
+* ActionReducerClass: the actual class that will be doing the reducing.
+
+**Returns** a slice reducer wrapping an instance of `ActionReducerClass`
+
+##### Example:
+```js
+Actions.sayHello('E.T.', 'call', 'home');
+```
+the following `action reducer` will transform the state for the slice `earth`:
+```js
+class HearthReducer {
+    sayHello(who, did, what, state) {
+        return {...state, messages: [state.messages, `${who} ${did} ${what}`]};
+    }
+}
+
+const earthReducer = actionReducer('earth')(HearthReducer);
+```
+For actions declared `UPPER_CASE` methods map to their `camelCase` counterpart. Also action reducers methods can be named
+starting with `on + ActionName`.
+For instance, methods named `onSayHello` and `sayHello` will listen to action `SAY_HELLO` or `sayHello`.
+
+### `function connectActionReducer({actionReducer, actions, inject}, mapSliceStateToProps, mapDispatchToProps): function (TargetComponent): <hoc>`
+Higher Order Component that will decorate `TargetComponent` to listen for store changes on the **slice** of the store
+mapped by `actionReducer`. Arguments `actions`, `inject`, `mapSliceStateToProps` and `mapStoreDispatchToProps` are optional.
+
+##### Arguments:
+* actionReducer: the action reducer that specifies the **slice** of the store the target component will map props from.
+* actions: an object generated with `generateActionDispatchers` of which its actions will be injected as props
+* inject: any arbitrary object of which its attributes will be injected as props
+* mapSliceStateToProps: function(slice, props): analog to `redux`'s `mapStateToProps` but that will receive only the slice
+ mapped by the provided `actionReducer`. If this function is not provided, the entire slice is mapped to props.
+ This function is memoize'd
+* mapDispatchToProps: function(dispatch, props): Same as `redux`'s `mapDispatchToProps`. This function is memoize'd
+* TargetComponent: the actual react component that will be connected to the store
+
+**Returns** a HOC that connects the target component to the store.
+
+##### Example:
+```js
+const VisibleTodoList = connectActionReducer({
+        actionReducer: TodosReducer,
+        actions: TodosActions
+    },
+    mapSliceStateToProps,
+    mapDispatchToProps
+)(TodoList);
+```
+
+### `actionReducersEnhancer(): function ({actionReducers, actionDispatchers}, preloadedState, enhancer): <store>`
+`redux` enhancer that combines all action reducers created with `actionReducer` and all action dispatchers created
+with `generateActionDispatchers` with `redux`s store.
+
+##### Arguments:
+* NONE
+
+**Returns** a `redux` enhancer.
+
+##### Exampple:
+```js
+const enhancer = actionReducersEnhancer();
+
+export const store = createStore({
+    actionReducers,
+    actionDispatchers
+}, enhancer);
+```
 ## License
 
 MIT ©2017 [Ulises Bocchio](http://github.com/ulisesbocchio)

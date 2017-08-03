@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 
-function createSubtreeReducer({ reducer, methods }) {
+function createSliceReducer({ reducer, methods }) {
   if (!reducer || !methods) {
     throw new Error('Invalid object passed as action reducer, make sure you use the actionReducer function properly')
   }
@@ -30,6 +30,6 @@ function objectMap(obj, mapFn) {
 
 export default function combineActionReducers(actionReducers) {
   const reducersMap = Object.assign({}, ...actionReducers.map(actionReducer => ({[actionReducer.name]: actionReducer})));
-  const storeReducers = objectMap(reducersMap, actionReducer => createSubtreeReducer(actionReducer));
+  const storeReducers = objectMap(reducersMap, actionReducer => createSliceReducer(actionReducer));
   return combineReducers(storeReducers);
 }

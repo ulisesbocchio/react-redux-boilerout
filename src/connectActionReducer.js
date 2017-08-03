@@ -1,23 +1,23 @@
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
 
-export default function connectActionReducer({actionReducer, actions, inject}, mapStoreStateToProps, mapStoreDispatchToProps) {
+export default function connectActionReducer({actionReducer, actions, inject}, mapSliceStateToProps, mapDispatchToProps) {
   return (component) => {
     const mapStateToProps = (state, ownProps) => {
       return Object.assign({},
         actions,
         inject,
-        mapStoreStateToProps ? mapStoreStateToProps(state, ownProps) : state
+        mapSliceStateToProps ? mapSliceStateToProps(state, ownProps) : state
       );
     };
 
-    const mapDispatchToProps = (dispatch, ownProps) => {
-      return mapStoreDispatchToProps ? mapStoreDispatchToProps(dispatch, ownProps) : {};
+    const mapActualDispatchToProps = (dispatch, ownProps) => {
+      return mapDispatchToProps ? mapDispatchToProps(dispatch, ownProps) : {};
     };
 
     const mapStateToPropsCreator = () => createSelector([actionReducer.selector, (s, p) => p], mapStateToProps);
     //eslint-disable-next-line no-unused-vars
-    const mapDispatchToPropsCreator = () => createSelector([(d, p) => d, (d, p) => p], mapDispatchToProps);
+    const mapDispatchToPropsCreator = () => createSelector([(d, p) => d, (d, p) => p], mapActualDispatchToProps);
 
     return connect(
       mapStateToPropsCreator,
