@@ -1,4 +1,4 @@
-import { actionReducersEnhancer, sliceReducer, generateActionDispatchers, connectSlice } from '../src';
+import { boileroutEnhancer, sliceReducer, generateActionDispatchers, connectSlice } from '../src';
 import { createStore } from 'redux';
 import React from 'react';
 import { Provider } from 'react-redux';
@@ -21,7 +21,7 @@ describe('Connect Slice Reducers Tests', () => {
   }
 
   it('checks connectSlice creates component', () => {
-    const enhancer = actionReducersEnhancer();
+    const enhancer = boileroutEnhancer();
     const aReducer = sliceReducer('a')(A);
     const sliceReducers = [aReducer];
     const theActions = generateActionDispatchers('start', 'stop');

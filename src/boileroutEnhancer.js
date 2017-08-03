@@ -7,7 +7,7 @@ function assertArg(cond, errorMessage) {
   }
 }
 
-export default function actionReducersEnhancer() {
+export default function boileroutEnhancer() {
     return (createStore) => (mainReducer, preloadedState, enhancer) => {
         assertArg(typeof mainReducer === 'object' && mainReducer !== null, 'Expecting first argument to be an object');
         const { sliceReducers, actionDispatchers = []} = mainReducer;

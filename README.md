@@ -233,7 +233,7 @@ just in case you need it.
 
 ### Finally, initialize `redux` with a special enhancer that binds it all together
 
-You need to provide `actionReducersEnhancer` an object with `sliceReducers` and `actionDispatcher` so they can be
+You need to provide `boileroutEnhancer` an object with `sliceReducers` and `actionDispatcher` so they can be
 properly bound to the store. But you don't pass those to the enhancer itself, instead, you pass them as first
 argument to `redux`'s `createStore` function where you would put your main reducer.
 
@@ -242,7 +242,7 @@ argument to `redux`'s `createStore` function where you would put your main reduc
 import TodosReducer from './TodosReducer';
 import TodosActions from '../actions/TodosActions';
 import { createStore } from 'redux';
-import { actionReducersEnhancer } from 'react-redux-boilerout';
+import { boileroutEnhancer } from 'react-redux-boilerout';
 
 const sliceReducers = [
     TodosReducer
@@ -252,7 +252,7 @@ const actionDispatchers = [
     TodosActions
 ];
 
-const enhancer = actionReducersEnhancer();
+const enhancer = boileroutEnhancer();
 
 export const store = createStore({
     sliceReducers,
@@ -263,7 +263,7 @@ You can also use `redux`'s compose to add any other enhancer/middleware like:
 
 ```js
 const enhancer = compose(
-    actionReducersEnhancer(),
+    boileroutEnhancer(),
     applyMiddleware(
         logger,
         crashReporter
@@ -368,7 +368,7 @@ const VisibleTodoList = connectSlice({
 )(TodoList);
 ```
 
-### `actionReducersEnhancer(): <function ({sliceReducers, actionDispatchers}, preloadedState, enhancer): <store>>`
+### `boileroutEnhancer(): <function ({sliceReducers, actionDispatchers}, preloadedState, enhancer): <store>>`
 `redux` enhancer that combines all action reducers created with `sliceReducer` and all action dispatchers created
 with `generateActionDispatchers` with `redux`s store.
 
@@ -379,7 +379,7 @@ with `generateActionDispatchers` with `redux`s store.
 
 ##### Exampple:
 ```js
-const enhancer = actionReducersEnhancer();
+const enhancer = boileroutEnhancer();
 
 export const store = createStore({
     sliceReducers,

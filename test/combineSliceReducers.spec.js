@@ -1,6 +1,6 @@
 import { combineSliceReducers, sliceReducer } from '../src'
 
-describe('Combine Action Reducers Tests', () => {
+describe('Combine Slice Reducers Tests', () => {
   class A {
     static initialState() {return 999}
     one(){return 1}

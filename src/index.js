@@ -1,5 +1,5 @@
 import generateActionDispatchers from './generateActionDispatchers';
-import actionReducersEnhancer from './actionReducersEnhancer';
+import boileroutEnhancer from './boileroutEnhancer';
 import connectSlice from './connectSlice';
 import sliceReducer from './sliceReducer';
 import combineSliceReducers from './combineSliceReducers';
@@ -7,7 +7,7 @@ import bindAllActionDispatchers from './bindAllActionDispatchers';
 
 export {
   generateActionDispatchers,
-  actionReducersEnhancer,
+  boileroutEnhancer,
   connectSlice,
   sliceReducer,
   combineSliceReducers,

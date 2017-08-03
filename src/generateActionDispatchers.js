@@ -18,7 +18,7 @@ function actionDispatcher(actionCreator) {
   let dispatch = null;
   const dispatchAction = (...args) => {
     if (!dispatch) {
-      throw new Error('dispatch function not initialized, make sure you passed actionCreators to actionReducersEnhancer on store creation');
+      throw new Error('dispatch function not initialized, make sure you passed actionCreators to boileroutEnhancer on store creation');
     }
     dispatch(actionCreator(...args));
   };
