@@ -1,6 +1,8 @@
 import { actionReducersEnhancer, actionReducer, generateActionDispatchers, connectSlice } from '../src';
 import { createStore } from 'redux';
 import React from 'react';
+import { Provider } from 'react-redux';
+import { mount } from 'enzyme';
 
 const SillyComp = ({ start, stop,  started, message }) => (
   <div
@@ -32,6 +34,10 @@ describe('Connect Action Reducers Tests', () => {
       },
       (s, p) => p
     )(SillyComp);
+
+    const wrapper = mount(<Provider store={store}><Container/></Provider>);
+    expect(wrapper).toHaveLength(1);
+
   });
 });
 
