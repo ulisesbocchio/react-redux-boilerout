@@ -1,6 +1,8 @@
 import { actionReducersEnhancer, actionReducer, generateActionDispatchers, connectActionReducer } from '../src';
 import { createStore } from 'redux';
 import React from 'react';
+import { Provider } from 'react-redux';
+import { mount } from 'enzyme';
 
 const SillyComp = ({ start, stop,  started, message }) => (
   <div
@@ -26,12 +28,16 @@ describe('Connect Action Reducers Tests', () => {
     const actionCreators = [theActions];
     const store = createStore({ actionReducers, actionCreators }, enhancer);
 
-    const container = connectActionReducer({
+    const Container = connectActionReducer({
         actionReducer: aReducer,
         actions: theActions
       },
       (s, p) => p
     )(SillyComp);
+
+    const wrapper = mount(<Provider store={store}><Container/></Provider>);
+    expect(wrapper).toHaveLength(1);
+
   });
 });
 
