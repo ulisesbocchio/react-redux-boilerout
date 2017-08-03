@@ -28,7 +28,7 @@ describe('Connect Action Reducers Tests', () => {
     const actionCreators = [theActions];
     const store = createStore({ actionReducers, actionCreators }, enhancer);
 
-    const container = connectSlice({
+    const Container = connectSlice({
         slice: 'a',
         actions: theActions
       },
