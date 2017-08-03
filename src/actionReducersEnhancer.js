@@ -1,5 +1,5 @@
 import bindAllActionDispatchers from './bindAllActionDispatchers';
-import combineActionReducers from './combineActionReducers';
+import combineSliceReducers from './combineSliceReducers';
 
 function assertArg(cond, errorMessage) {
   if (!cond) {
@@ -13,7 +13,7 @@ export default function actionReducersEnhancer() {
         const { sliceReducers, actionDispatchers = []} = mainReducer;
         assertArg(Array.isArray(sliceReducers) && sliceReducers.length, 'Expecting sliceReducers to be an array with at least one action reducer');
         assertArg(Array.isArray(actionDispatchers), 'Expecting actionDispatchers to be an array');
-        const storeReducer = combineActionReducers(sliceReducers);
+        const storeReducer = combineSliceReducers(sliceReducers);
         const store = createStore(storeReducer, preloadedState, enhancer);
         bindAllActionDispatchers(actionDispatchers, store.dispatch);
         return store;

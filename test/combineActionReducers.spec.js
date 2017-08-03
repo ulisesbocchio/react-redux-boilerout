@@ -1,4 +1,4 @@
-import { combineActionReducers, sliceReducer } from '../src'
+import { combineSliceReducers, sliceReducer } from '../src'
 
 describe('Combine Action Reducers Tests', () => {
   class A {
@@ -22,7 +22,7 @@ describe('Combine Action Reducers Tests', () => {
       sliceReducer('a')(A),
       sliceReducer('b')(B)
     ];
-    const reducer = combineActionReducers(sliceReducers);
+    const reducer = combineSliceReducers(sliceReducers);
     expect(reducer).toEqual(expect.any(Function));
   });
 
@@ -31,7 +31,7 @@ describe('Combine Action Reducers Tests', () => {
       sliceReducer('a', A),
       sliceReducer('b', B)
     ];
-    expect(() => combineActionReducers(sliceReducers)).toThrowError(/Invalid object passed as action reducer/);
+    expect(() => combineSliceReducers(sliceReducers)).toThrowError(/Invalid object passed as action reducer/);
   });
 
   it('should map state to keys', () => {
@@ -39,7 +39,7 @@ describe('Combine Action Reducers Tests', () => {
       sliceReducer('a')(A),
       sliceReducer('b')(B)
     ];
-    const reducer = combineActionReducers(sliceReducers);
+    const reducer = combineSliceReducers(sliceReducers);
 
     let newState = reducer({a:{}, b: {}}, {type: 'one', payload:['a']});
     expect(newState).toEqual({a: 1, b: {}});
@@ -59,7 +59,7 @@ describe('Combine Action Reducers Tests', () => {
       sliceReducer('a')(A),
       sliceReducer('b')(B)
     ];
-    const reducer = combineActionReducers(sliceReducers);
+    const reducer = combineSliceReducers(sliceReducers);
 
     let newState = reducer({a:{}, b: {}}, {type: 'one', payload:['a']});
     expect(newState).toEqual({a: 1, b: {}});
@@ -73,7 +73,7 @@ describe('Combine Action Reducers Tests', () => {
       sliceReducer('a')(A),
       sliceReducer('b')(B)
     ];
-    const reducer = combineActionReducers(sliceReducers);
+    const reducer = combineSliceReducers(sliceReducers);
 
     const newState = reducer({a:{}, b: {}}, {type: 'TWO', payload:['a'], variants: ['two', 'onTwo']});
     expect(newState).toEqual({a: 'a', b: 'magic'});
@@ -84,7 +84,7 @@ describe('Combine Action Reducers Tests', () => {
       sliceReducer('a')(A),
       sliceReducer('b')(B)
     ];
-    const reducer = combineActionReducers(sliceReducers);
+    const reducer = combineSliceReducers(sliceReducers);
 
     const newState = reducer();
     expect(newState).toEqual({a: 999, b: {}});
@@ -96,7 +96,7 @@ describe('Combine Action Reducers Tests', () => {
       sliceReducer('b')(B),
       sliceReducer('c')(C)
     ];
-    const reducer = combineActionReducers(sliceReducers);
+    const reducer = combineSliceReducers(sliceReducers);
 
     const newState = reducer();
     expect(newState).toEqual({a: 999, b: {}, c: 666});
