@@ -312,7 +312,7 @@ const Actions = generateActionDispatchers('SAY_HELLO');
 Actions.sayHello('Hi There!'); //dispatch action synchronously
 Actions.sayHello.defer('Hi There!'); //dispatch action asynchronously
 ```
-### `function actionReducer(slice): function (ActionReducerClass): <reducer>`
+### `function actionReducer(slice): <function (ActionReducerClass): <reducer>>`
 Generates a reducer function for the `slice` portion of the store that will use `class instance` of the provided class
 that upon execution on action dispatch it will select the appropriate method based on the action's `type`
 when dispatching actions.
@@ -340,7 +340,7 @@ For actions declared `UPPER_CASE` methods map to their `camelCase` counterpart. 
 starting with `on + ActionName`.
 For instance, methods named `onSayHello` and `sayHello` will listen to action `SAY_HELLO` or `sayHello`.
 
-### `function connectActionReducer({actionReducer, actions, inject}, mapSliceStateToProps, mapDispatchToProps): function (TargetComponent): <hoc>`
+### `function connectActionReducer({actionReducer, actions, inject}, mapSliceStateToProps, mapDispatchToProps): <function (TargetComponent): <hoc>>`
 Higher Order Component that will decorate `TargetComponent` to listen for store changes on the **slice** of the store
 mapped by `actionReducer`. Arguments `actions`, `inject`, `mapSliceStateToProps` and `mapStoreDispatchToProps` are optional.
 
@@ -367,7 +367,7 @@ const VisibleTodoList = connectActionReducer({
 )(TodoList);
 ```
 
-### `actionReducersEnhancer(): function ({actionReducers, actionDispatchers}, preloadedState, enhancer): <store>`
+### `actionReducersEnhancer(): <function ({actionReducers, actionDispatchers}, preloadedState, enhancer): <store>>`
 `redux` enhancer that combines all action reducers created with `actionReducer` and all action dispatchers created
 with `generateActionDispatchers` with `redux`s store.
 
