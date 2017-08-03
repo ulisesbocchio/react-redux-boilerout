@@ -146,12 +146,12 @@ it would look like this:
 ```
 ### With action dispatchers and action reducers in place, you can now connect them to your components
 
-Using a similar approach to `react-redux`'s `connect` HOC, `react-redux-boilerout` provides `connectActionReducer` to connect
+Using a similar approach to `react-redux`'s `connect` HOC, `react-redux-boilerout` provides `connectSlice` to connect
 your component to a specific **slice** of the state directly, without having to write the selection boilerplate.
 
 `TodoListContainer.js`
 ```js
-import { connectActionReducer } from 'react-redux-boilerout';
+import { connectSlice } from 'react-redux-boilerout';
 import TodosActions from './TodosActions';
 import TodoList from './TodoList';
 import TodosReducer from './TodosReducer';
@@ -173,7 +173,7 @@ const mapSliceStateToProps = (slice) => ({
     todos: getVisibleTodos(slice.items, slice.filter)
 });
 
-const VisibleTodoList = connectActionReducer({
+const VisibleTodoList = connectSlice({
         actionReducer: TodosReducer,
         actions: TodosActions
     },
@@ -182,7 +182,7 @@ const VisibleTodoList = connectActionReducer({
 
 export default VisibleTodoList
 ```
-Here, on the `connectActionReducer` call we listen to the `todos` **slice** of the store by specifying:
+Here, on the `connectSlice` call we listen to the `todos` **slice** of the store by specifying:
 ```js
 actionReducer: TodosReducer
 ```
@@ -199,7 +199,7 @@ Another optional argument that you can pass after `mapSliceStateToProps` is `map
 
 `FilterLinkContainer.js`
 ```js
-import { connectActionReducer } from 'react-redux-boilerout';
+import { connectSlice } from 'react-redux-boilerout';
 import TodosActions from './TodosActions';
 import TodosReducer from './TodosReducer';
 import FilterLink from './FilterLink';
@@ -214,7 +214,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   }
 });
 
-const FilterLinkContainer = connectActionReducer({
+const FilterLinkContainer = connectSlice({
     actionReducer: TodosReducer
   },
     mapSliceStateToProps,
@@ -341,7 +341,7 @@ For actions declared with `UPPER_CASE` style, action reducer methods map to thei
 starting with `on + ActionName`.
 For instance, methods named `onSayHello` and `sayHello` will listen to action `SAY_HELLO` or `sayHello`.
 
-### `function connectActionReducer({actionReducer, actions, inject}, mapSliceStateToProps, mapDispatchToProps): <function (TargetComponent): <hoc>>`
+### `function connectSlice({actionReducer, actions, inject}, mapSliceStateToProps, mapDispatchToProps): <function (TargetComponent): <hoc>>`
 Higher Order Component that will decorate `TargetComponent` to listen for store changes on the **slice** of the store
 mapped by `actionReducer`. Arguments `actions`, `inject`, `mapSliceStateToProps` and `mapStoreDispatchToProps` are optional.
 
@@ -359,7 +359,7 @@ mapped by `actionReducer`. Arguments `actions`, `inject`, `mapSliceStateToProps`
 
 ##### Example:
 ```js
-const VisibleTodoList = connectActionReducer({
+const VisibleTodoList = connectSlice({
         actionReducer: TodosReducer,
         actions: TodosActions
     },

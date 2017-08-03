@@ -1,4 +1,4 @@
-import { actionReducersEnhancer, actionReducer, generateActionDispatchers, connectActionReducer } from '../src';
+import { actionReducersEnhancer, actionReducer, generateActionDispatchers, connectSlice } from '../src';
 import { createStore } from 'redux';
 import React from 'react';
 
@@ -18,7 +18,7 @@ describe('Connect Action Reducers Tests', () => {
     nothing = state => state;
   }
 
-  it('checks connectActionReducer creates component', () => {
+  it('checks connectSlice creates component', () => {
     const enhancer = actionReducersEnhancer();
     const aReducer = actionReducer('a')(A);
     const actionReducers = [aReducer];
@@ -26,8 +26,8 @@ describe('Connect Action Reducers Tests', () => {
     const actionCreators = [theActions];
     const store = createStore({ actionReducers, actionCreators }, enhancer);
 
-    const container = connectActionReducer({
-        actionReducer: aReducer,
+    const container = connectSlice({
+        slice: 'a',
         actions: theActions
       },
       (s, p) => p

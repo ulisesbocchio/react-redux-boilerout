@@ -20,37 +20,16 @@ describe('Action Reducer Tests', () => {
     it('checks attributes in created object', () => {
       const reducer = actionReducer('a')(A);
 
-      expect(reducer).toHaveProperty('name');
-      expect(reducer).toHaveProperty('clazz');
-      expect(reducer).toHaveProperty('reducer');
-      expect(reducer).toHaveProperty('methods');
-
-      expect(reducer.name).toEqual('a');
-      expect(reducer.clazz).toEqual(A);
-      expect(reducer.reducer).toEqual(expect.any(A));
-      expect(reducer.selector).toEqual(expect.any(Function));
-      expect(reducer.methods).toEqual(['someMethod', 'someOtherMethod']);
+      expect(reducer).toHaveProperty('slice');
+      expect(reducer).toEqual(expect.any(Function));
+      expect(reducer.slice).toEqual('a');
     });
 
   it('checks attributes in created object with class props', () => {
     const reducer = actionReducer('b')(B);
 
-    expect(reducer).toHaveProperty('name');
-    expect(reducer).toHaveProperty('clazz');
-    expect(reducer).toHaveProperty('reducer');
-    expect(reducer).toHaveProperty('methods');
-
-    expect(reducer.name).toEqual('b');
-    expect(reducer.clazz).toEqual(B);
-    expect(reducer.reducer).toEqual(expect.any(B));
-    expect(reducer.selector).toEqual(expect.any(Function));
-    expect(reducer.methods).toEqual(['someMethod', 'someOtherMethod']);
-  });
-
-  it('checks selector in created object', () => {
-    const reducer = actionReducer('a')(A);
-
-    expect(reducer.selector({a: 'hi'})).toEqual('hi');
-    expect(reducer.selector({b: 'hi'})).toBeUndefined();
+    expect(reducer).toHaveProperty('slice');
+    expect(reducer).toEqual(expect.any(Function));
+    expect(reducer.slice).toEqual('b');
   });
 });

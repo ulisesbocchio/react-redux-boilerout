@@ -2,7 +2,7 @@ import { combineActionReducers, actionReducer } from '../src'
 
 describe('Combine Action Reducers Tests', () => {
   class A {
-    initialState() {return 999}
+    static initialState() {return 999}
     one(){return 1}
     two(a){return a}
   }
@@ -11,6 +11,10 @@ describe('Combine Action Reducers Tests', () => {
     three(a, b){return a + b}
     four(){return 4}
     onTwo() {return 'magic'}
+  }
+
+  class C {
+    initialState() {return 666}
   }
 
   it('checks it returns one reducer', () => {
@@ -84,6 +88,18 @@ describe('Combine Action Reducers Tests', () => {
 
     const newState = reducer();
     expect(newState).toEqual({a: 999, b: {}});
+  });
+
+  it('should use initialState no static', () => {
+    const actionReducers = [
+      actionReducer('a')(A),
+      actionReducer('b')(B),
+      actionReducer('c')(C)
+    ];
+    const reducer = combineActionReducers(actionReducers);
+
+    const newState = reducer();
+    expect(newState).toEqual({a: 999, b: {}, c: 666});
   });
 
 });

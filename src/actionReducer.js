@@ -5,16 +5,38 @@ function getClassMethods(instance) {
   ].filter(m => m !== 'constructor');
 }
 
-export default function actionReducer(name) {
+function createSliceReducer({ reducer, methods, slice, reducerClass }) {
+  const methodCache = {};
+  const findMethod = action => {
+    if (!(action.type in methodCache)) {
+      methodCache[action.type] = methods.find(key => action.variants ? action.variants.includes(key) : key === action.type);
+    }
+    return methodCache[action.type];
+  };
+  const sliceReducer = (sliceState, action) => {
+    //eslint-disable-next-line no-undefined
+    if (sliceState === undefined) {
+      const initializer = reducer.initialState || reducerClass.initialState || (() => ({}));
+      return initializer.bind(reducer)();
+    }
+    const reducerMethod = findMethod(action);
+    if (reducerMethod) {
+      return reducer[reducerMethod].bind(reducer)(...action.payload, sliceState);
+    }
+    return sliceState;
+  };
+  sliceReducer.slice = slice;
+  return sliceReducer;
+}
+
+export default function actionReducer(slice) {
   return (reducerClass) => {
     const instance = new reducerClass();
-    return {
-      name,
-      clazz: reducerClass,
+    return createSliceReducer({
+      reducerClass,
+      slice,
       reducer: instance,
-      methods: getClassMethods(instance),
-      //eslint-disable-next-line no-unused-vars
-      selector: (state, props) => state[name]
-    }
+      methods: getClassMethods(instance)
+    })
   };
 }
