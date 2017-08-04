@@ -174,7 +174,7 @@ const mapSliceStateToProps = (slice) => ({
 });
 
 const VisibleTodoList = connectSlice({
-        sliceReducer: TodosReducer,
+        slice: 'todos',
         actions: TodosActions
     },
     mapSliceStateToProps
@@ -215,7 +215,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 });
 
 const FilterLinkContainer = connectSlice({
-    sliceReducer: TodosReducer
+    slice: 'todos'
   },
     mapSliceStateToProps,
     mapDispatchToProps
@@ -233,7 +233,7 @@ just in case you need it.
 
 ### Finally, initialize `redux` with a special enhancer that binds it all together
 
-You need to provide `boileroutEnhancer` an object with `sliceReducers` and `actionDispatcher` so they can be
+You need to provide `boileroutEnhancer` an object with `sliceReducers` and `actionDispatchers` so they can be
 properly bound to the store. But you don't pass those to the enhancer itself, instead, you pass them as first
 argument to `redux`'s `createStore` function where you would put your main reducer.
 
@@ -341,12 +341,12 @@ For actions declared with `UPPER_CASE` style, action reducer methods map to thei
 starting with `on + ActionName`.
 For instance, methods named `onSayHello` and `sayHello` will listen to action `SAY_HELLO` or `sayHello`.
 
-### `function connectSlice({sliceReducer, actions, inject}, mapSliceStateToProps, mapDispatchToProps): <function (TargetComponent): <hoc>>`
+### `function connectSlice({slice, actions, inject}, mapSliceStateToProps, mapDispatchToProps): <function (TargetComponent): <hoc>>`
 Higher Order Component that will decorate `TargetComponent` to listen for store changes on the **slice** of the store
-mapped by `sliceReducer`. Arguments `actions`, `inject`, `mapSliceStateToProps` and `mapStoreDispatchToProps` are optional.
+mapped by `slice`. Arguments `actions`, `inject`, `mapSliceStateToProps` and `mapStoreDispatchToProps` are optional.
 
 ##### Arguments:
-* sliceReducer: the action reducer that specifies the **slice** of the store the target component will map props from.
+* slice: **slice name** the target component will map props from.
 * actions: an object generated with `generateActionDispatchers` of which its actions will be injected as props
 * inject: any arbitrary object of which its attributes will be injected as props
 * mapSliceStateToProps: function(slice, props): analog to `redux`'s `mapStateToProps` but that will receive only the slice
@@ -360,7 +360,7 @@ mapped by `sliceReducer`. Arguments `actions`, `inject`, `mapSliceStateToProps` 
 ##### Example:
 ```js
 const VisibleTodoList = connectSlice({
-        sliceReducer: TodosReducer,
+        slice: 'todos',
         actions: TodosActions
     },
     mapSliceStateToProps,
