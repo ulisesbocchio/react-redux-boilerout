@@ -394,9 +394,9 @@ MIT ©2017 [Ulises Bocchio](http://github.com/ulisesbocchio)
 [badges-url]: https://github.com/ulisesbocchio/react-redux-boilerout
 [gitter-image]: https://img.shields.io/gitter/room/ulisesbocchio/react-redux-boilerout.svg
 [gitter-url]: https://gitter.im/ulisesbocchio/react-redux-boilerout?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
-[npm-image]: https://img.shields.io/npm/v/redux.svg
-[downloads-week-svg]: https://img.shields.io/npm/dw/redux.svg
-[downloads-month-svg]: https://img.shields.io/npm/dm/redux.svg
-[downloads-year-svg]: https://img.shields.io/npm/dy/redux.svg
-[downloads-total-svg]: https://img.shields.io/npm/dt/redux.svg
-[cdnjs-svg]: https://img.shields.io/cdnjs/v/redux.svg
+[npm-image]: https://img.shields.io/npm/v/react-redux-boilerout.svg
+[downloads-week-svg]: https://img.shields.io/npm/dw/react-redux-boilerout.svg
+[downloads-month-svg]: https://img.shields.io/npm/dm/react-redux-boilerout.svg
+[downloads-year-svg]: https://img.shields.io/npm/dy/react-redux-boilerout.svg
+[downloads-total-svg]: https://img.shields.io/npm/dt/react-redux-boilerout.svg
+[cdnjs-svg]: https://img.shields.io/cdnjs/v/react-redux-boilerout.svg
