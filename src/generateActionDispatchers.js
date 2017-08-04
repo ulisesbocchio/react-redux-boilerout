@@ -37,5 +37,8 @@ function actionCreator(action) {
 }
 
 export default function generateActionDispatchers(...actions) {
+  if (!actions.length) {
+    return {};
+  }
   return Object.assign(...actions.map( action => ({ [normalizeActionName(action)]: actionDispatcher(actionCreator(action)) }) ));
 }
