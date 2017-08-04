@@ -1,4 +1,4 @@
-import { boileroutEnhancer, sliceReducer, generateActionDispatchers, connectSlice } from '../src';
+import { sliceReducer, generateActionDispatchers, connectSlice, combineSliceReducers } from '../src';
 import { createStore } from 'redux';
 import React from 'react';
 import { Provider } from 'react-redux';
@@ -9,14 +9,9 @@ describe('Connect Slice Reducers Tests', () => {
     const SillyComp = ({ message }) => <div id="silly">{message}</div>;
     class SampleReducerClass {}
 
-    const enhancer = boileroutEnhancer();
     const SampleReducer = sliceReducer('sample')(SampleReducerClass);
-    const SampleActions = generateActionDispatchers();
-
-    const sliceReducers = [SampleReducer];
-    const actionDispatchers = [SampleActions];
-    const store = createStore({ sliceReducers, actionDispatchers }, enhancer);
-
+    const reducer = combineSliceReducers(SampleReducer);
+    const store = createStore(reducer);
     const Container = connectSlice({
       slice: 'sample'
     })(SillyComp);
@@ -37,13 +32,9 @@ describe('Connect Slice Reducers Tests', () => {
       initialState = () => ({ message: "what's up?", started: false });
     }
 
-    const enhancer = boileroutEnhancer();
     const SampleReducer = sliceReducer('sample')(SampleReducerClass);
-    const SampleActions = generateActionDispatchers();
-
-    const sliceReducers = [SampleReducer];
-    const actionDispatchers = [SampleActions];
-    const store = createStore({ sliceReducers, actionDispatchers }, enhancer);
+    const reducer = combineSliceReducers(SampleReducer);
+    const store = createStore(reducer);
 
     const Container = connectSlice({
       slice: 'sample'
@@ -59,13 +50,9 @@ describe('Connect Slice Reducers Tests', () => {
       static initialState = () => ({ message: "what's up?", started: false });
     }
 
-    const enhancer = boileroutEnhancer();
     const SampleReducer = sliceReducer('sample')(SampleReducerClass);
-    const SampleActions = generateActionDispatchers();
-
-    const sliceReducers = [SampleReducer];
-    const actionDispatchers = [SampleActions];
-    const store = createStore({ sliceReducers, actionDispatchers }, enhancer);
+    const reducer = combineSliceReducers(SampleReducer);
+    const store = createStore(reducer);
 
     const Container = connectSlice({
       slice: 'sample'
@@ -85,13 +72,10 @@ describe('Connect Slice Reducers Tests', () => {
       nothing = state => state;
     }
 
-    const enhancer = boileroutEnhancer();
     const SampleReducer = sliceReducer('sample')(SampleReducerClass);
-    const SampleActions = generateActionDispatchers('start', 'stop', 'nothing');
-
-    const sliceReducers = [SampleReducer];
-    const actionDispatchers = [SampleActions];
-    const store = createStore({ sliceReducers, actionDispatchers }, enhancer);
+    const reducer = combineSliceReducers(SampleReducer);
+    const store = createStore(reducer);
+    const SampleActions = generateActionDispatchers(store.dispatch, 'start', 'stop', 'nothing');
 
     const Container = connectSlice({
       slice: 'sample'
@@ -116,13 +100,10 @@ describe('Connect Slice Reducers Tests', () => {
       initialState = () => ({ message: "what's up?", started: false });
     }
 
-    const enhancer = boileroutEnhancer();
     const SampleReducer = sliceReducer('sample')(SampleReducerClass);
-    const SampleActions = generateActionDispatchers();
-
-    const sliceReducers = [SampleReducer];
-    const actionDispatchers = [SampleActions];
-    const store = createStore({ sliceReducers, actionDispatchers }, enhancer);
+    const reducer = combineSliceReducers(SampleReducer);
+    const store = createStore(reducer);
+    const SampleActions = generateActionDispatchers(store.dispatch, 'meh');
 
     const Container = connectSlice(
       { slice: 'sample', actions: SampleActions },
@@ -141,13 +122,10 @@ describe('Connect Slice Reducers Tests', () => {
       start = () => ({ message: 'hello', started: true });
     }
 
-    const enhancer = boileroutEnhancer();
     const SampleReducer = sliceReducer('sample')(SampleReducerClass);
-    const SampleActions = generateActionDispatchers();
-
-    const sliceReducers = [SampleReducer];
-    const actionDispatchers = [SampleActions];
-    const store = createStore({ sliceReducers, actionDispatchers }, enhancer);
+    const reducer = combineSliceReducers(SampleReducer);
+    const store = createStore(reducer);
+    const SampleActions = generateActionDispatchers(store.dispatch, 'meh');
 
     const Container = connectSlice(
       { slice: 'sample', actions: SampleActions },

@@ -1,4 +1,4 @@
-import { generateActionDispatchers, bindAllActionDispatchers } from '../src'
+import { generateActionDispatchers } from '../src'
 
 function deferred() {
   let resolve = null, reject = null;
@@ -15,22 +15,33 @@ function deferred() {
 
 describe('Generate Action Creator Tests', () => {
     it('checks actual actions are created', () => {
-      const actionDispatchers = generateActionDispatchers('update', 'remove', 'SOME_ACTION');
+      const actionDispatchers = generateActionDispatchers(()=>{}, 'update', 'remove', 'SOME_ACTION');
       expect(actionDispatchers).toHaveProperty('update');
       expect(actionDispatchers).toHaveProperty('remove');
       expect(actionDispatchers).toHaveProperty('someAction');
     });
 
-    it('checks that if fails when dispatch is not bound', () => {
-      const actionDispatchers = generateActionDispatchers('update');
-      expect(() => actionDispatchers.update('arg0')).toThrowError(/dispatch function not initialized/);
+    it('checks that if fails when dispatch is not passed', () => {
+      expect(() => generateActionDispatchers('update')).toThrowError(/dispatch function required/);
+    });
+
+    it('checks that if fails when dispatch is not a function', () => {
+      expect(() => generateActionDispatchers({}, 'update')).toThrowError(/dispatch function required/);
+    });
+
+    it('checks that if fails when no actions are passed', () => {
+      expect(() => generateActionDispatchers(()=>{})).toThrowError(/at least one action/);
+    });
+
+    it('checks that if fails when action is not a string', () => {
+      expect(() => generateActionDispatchers(()=>{}, 'update', {})).toThrowError(/actions need to be string/);
     });
 
     it('checks regular action creator function is there and returns', () => {
-      const actionDispatchers = generateActionDispatchers('update');
-      expect(actionDispatchers).toHaveProperty('update');
       let action = null;
-      bindAllActionDispatchers([actionDispatchers], (a) => action = a);
+      const dispatch = (a) => action = a;
+      const actionDispatchers = generateActionDispatchers(dispatch, 'update');
+      expect(actionDispatchers).toHaveProperty('update');
       actionDispatchers.update('arg0');
       expect(action).toMatchObject({
         type: 'update',
@@ -40,10 +51,10 @@ describe('Generate Action Creator Tests', () => {
     });
 
   it('checks regular action creator defer function is there and returns', async () => {
-    const actionDispatchers = generateActionDispatchers('update');
-    expect(actionDispatchers.update).toHaveProperty('defer');
     const actionDeferred = deferred();
-    bindAllActionDispatchers([actionDispatchers], (a) => actionDeferred.resolve(a));
+    const dispatch = (a) => actionDeferred.resolve(a);
+    const actionDispatchers = generateActionDispatchers(dispatch, 'update');
+    expect(actionDispatchers.update).toHaveProperty('defer');
     actionDispatchers.update.defer('arg0');
     const action = await actionDeferred.promise;
     expect(action).toMatchObject({
@@ -54,10 +65,10 @@ describe('Generate Action Creator Tests', () => {
   });
 
     it('checks UPPER_CASED action creator function is there and returns', () => {
-      const actionDispatchers = generateActionDispatchers('UPDATE_SOMETHING');
-      expect(actionDispatchers).toHaveProperty('updateSomething');
       let action = null;
-      bindAllActionDispatchers([actionDispatchers], (a) => action = a);
+      const dispatch = (a) => action = a;
+      const actionDispatchers = generateActionDispatchers(dispatch, 'UPDATE_SOMETHING');
+      expect(actionDispatchers).toHaveProperty('updateSomething');
       actionDispatchers.updateSomething({some: 'value'}, [1, 2, 3]);
       expect(action).toMatchObject({
         type: 'UPDATE_SOMETHING',

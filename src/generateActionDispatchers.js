@@ -14,15 +14,8 @@ function normalizeActionName(type) {
   return type;
 }
 
-function actionDispatcher(actionCreator) {
-  let dispatch = null;
-  const dispatchAction = (...args) => {
-    if (!dispatch) {
-      throw new Error('dispatch function not initialized, make sure you passed actionCreators to boileroutEnhancer on store creation');
-    }
-    dispatch(actionCreator(...args));
-  };
-  dispatchAction._setDispatch = d => dispatch = d;
+function actionDispatcher(dispatch, actionCreator) {
+  const dispatchAction = (...args) => dispatch(actionCreator(...args));
   dispatchAction.defer = (...args) => setTimeout(() => dispatchAction(...args));
   return dispatchAction;
 }
@@ -36,9 +29,15 @@ function actionCreator(action) {
   })
 }
 
-export default function generateActionDispatchers(...actions) {
-  if (!actions.length) {
-    return {};
+export default function generateActionDispatchers(dispatch, ...actions) {
+  if (!dispatch || typeof dispatch !== 'function') {
+    throw new Error('dispatch function required');
   }
-  return Object.assign(...actions.map( action => ({ [normalizeActionName(action)]: actionDispatcher(actionCreator(action)) }) ));
+  if (!actions.length) {
+    throw new Error('at least one action required');
+  }
+  if (actions.some(action => typeof action !== 'string')) {
+    throw new Error('actions need to be strings');
+  }
+  return Object.assign(...actions.map( action => ({ [normalizeActionName(action)]: actionDispatcher(dispatch, actionCreator(action)) }) ));
 }

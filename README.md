@@ -40,8 +40,9 @@ npm install react-redux-boilerout
 `TodoActions.js`
 ```js
 import { generateActionDispatchers } from 'react-redux-boilerout';
+import { store } from './redux'; //export your store!
 
-export default generateActionDispatchers(
+export default generateActionDispatchers(store.dispatch,
     'setVisibilityFilter',
     'addTodo',
     'toggleTodo'
@@ -66,9 +67,9 @@ The Actions dispatched by this dispatchers have the format:
 }
 ```
 
-Redux's `dispatch` function is bound automatically also.
+Redux's `dispatch` function is bound to the resulting dispatchers.
 
-### Forget about reducer functions and `combineReducers`
+### Forget about reducer functions with nasty `switch` statements
 
 Simply create reducer classes with action listeners
 
@@ -111,16 +112,16 @@ class TodosReducer {
 export default sliceReducer('todos')(TodosReducer);
 
 ```
-And don't forget to export using the `sliceReducer` HOF for which the first call receives the store **slice** name that
-it will listen to, just like you would with `combineReducers` and on the second call provide the class being used as actions
-reducer.
-The initial state of the **slice** is defined with the special function `initialState`.
+And don't forget to export your class using the `sliceReducer` decorator for which you need specify the store **slice** name that
+it will listen to, like you would with `combineReducers`.
+
+The initial state of the **slice** is defined with the special **static** function `initialState`.
 
 Each method of the class receives the arguments passed to the action dispatcher when it was called, and the last argument
 is the current `state`. The method must then return the new state of the **slice**, just like you would with a regular reducer,
 without mutating the current state of course, instead you need to make sure it's a new instance with the appropriate changes.
 
-For the above example with an empty preloaded state, the store would be initialized with:
+For the above example with an empty preloadedState passed to redux, the store would be initialized with:
 
 ```js
 {
@@ -184,7 +185,7 @@ export default VisibleTodoList
 ```
 Here, on the `connectSlice` call we listen to the `todos` **slice** of the store by specifying:
 ```js
-sliceReducer: TodosReducer
+slice: 'todos'
 ```
 And we are mapping the `TodosActions` action dispatchers to props in the target component with:
 ```js
@@ -231,44 +232,20 @@ just in case you need it.
  Fortunately no, `mapSliceStateToProps` and `mapDispatchToProps` are wrapped with `reselect` and provided to `redux`
  as functions so each component instance will memoize the props properly.
 
-### Finally, initialize `redux` with a special enhancer that binds it all together
+### Finally, initialize `redux` with a special reducer that combines all your slice reducers
 
-You need to provide `boileroutEnhancer` an object with `sliceReducers` and `actionDispatchers` so they can be
-properly bound to the store. But you don't pass those to the enhancer itself, instead, you pass them as first
-argument to `redux`'s `createStore` function where you would put your main reducer.
+You need to provide `combineSliceReducers` any amount of `sliceReducer` functions and export the store if you're calling
+`generateActionDispatchers` from a different file.
 
-`reduxStore.js`
+`redux.js`
 ```js
 import TodosReducer from './TodosReducer';
-import TodosActions from '../actions/TodosActions';
 import { createStore } from 'redux';
-import { boileroutEnhancer } from 'react-redux-boilerout';
+import { combineSliceReducers } from 'react-redux-boilerout';
 
-const sliceReducers = [
-    TodosReducer
-];
+const reducer = combineSliceReducers(TodosReducer);
 
-const actionDispatchers = [
-    TodosActions
-];
-
-const enhancer = boileroutEnhancer();
-
-export const store = createStore({
-    sliceReducers,
-    actionDispatchers
-}, enhancer);
-```
-You can also use `redux`'s compose to add any other enhancer/middleware like:
-
-```js
-const enhancer = compose(
-    boileroutEnhancer(),
-    applyMiddleware(
-        logger,
-        crashReporter
-    )
-);
+export const store = createStore(reducer);
 ```
 
 Last step is to inject the store into your `Provider`
@@ -278,7 +255,7 @@ Last step is to inject the store into your `Provider`
 import React from 'react'
 import { Provider } from 'react-redux'
 import App from './App'
-import { store } from './reduxStore'
+import { store } from './redux'
 
 const AppProvider = () => (
     <Provider store={store}>
@@ -295,20 +272,21 @@ using `react-redux-boilerout`.
 
 ## API Docs
 
-### `function generateActionDispatchers(...actions): <object>`
+### `function generateActionDispatchers(dispatch, ...actions): <object>`
 Generates an object that maps the action names to function properties that are action dispatchers.
 If the actions are in the form of `ACTION_NAME` the dispatcher functions are normalized to the `actionName` form (camelCase).
 For each action, let's say 'sayHello' the resulting function property will also have a `defer` version that will dispatch
 the action asynchronously.
  
 ##### Arguments:
+* dispatch: redux store dispatch function to bind the action creators with.
 * actions: an arbitrary list of strings to generate the action dispatchers.
 
 **Returns** an object with the dispatcher function attributes
 
 ##### Example:
 ```js
-const Actions = generateActionDispatchers('SAY_HELLO');
+const Actions = generateActionDispatchers(dispatch, 'SAY_HELLO');
 Actions.sayHello('Hi There!'); //dispatch action synchronously
 Actions.sayHello.defer('Hi There!'); //dispatch action asynchronously
 ```
@@ -329,13 +307,13 @@ Actions.sayHello('E.T.', 'call', 'home');
 ```
 the following `action reducer` will transform the state for the slice `earth` when `sayHello` is dispatched:
 ```js
-class HearthReducer {
+class EarthReducer {
     sayHello(who, did, what, state) {
         return {...state, messages: [state.messages, `${who} ${did} ${what}`]};
     }
 }
 
-const earthReducer = sliceReducer('earth')(HearthReducer);
+const earthReducer = sliceReducer('earth')(EarthReducer);
 ```
 For actions declared with `UPPER_CASE` style, action reducer methods map to their `camelCase` counterpart. Also action reducers methods can be named
 starting with `on + ActionName`.
@@ -368,14 +346,13 @@ const VisibleTodoList = connectSlice({
 )(TodoList);
 ```
 
-### `boileroutEnhancer(): <function ({sliceReducers, actionDispatchers}, preloadedState, enhancer): <store>>`
-`redux` enhancer that combines all action reducers created with `sliceReducer` and all action dispatchers created
-with `generateActionDispatchers` with `redux`s store.
+### `functioin combineSliceReducers(...sliceReducers): <reducer>`
+Analog to `redux`'s `combineReducers` but for reducers generated with the `sliceReducer` decorator.
 
 ##### Arguments:
-* NONE
+* sliceReducers: the slice reducers to combine into one reducer.
 
-**Returns** a `redux` enhancer.
+**Returns** a `redux` reducer.
 
 ##### Exampple:
 ```js
