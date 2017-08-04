@@ -346,7 +346,7 @@ const VisibleTodoList = connectSlice({
 )(TodoList);
 ```
 
-### `functioin combineSliceReducers(...sliceReducers): <reducer>`
+### `function combineSliceReducers(...sliceReducers): <reducer>`
 Analog to `redux`'s `combineReducers` but for reducers generated with the `sliceReducer` decorator.
 
 ##### Arguments:
