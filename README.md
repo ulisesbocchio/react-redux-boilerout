@@ -356,12 +356,11 @@ Analog to `redux`'s `combineReducers` but for reducers generated with the `slice
 
 ##### Exampple:
 ```js
-const enhancer = boileroutEnhancer();
+import { combineSliceReducers } from 'react-redux-boilerout';
 
-export const store = createStore({
-    sliceReducers,
-    actionDispatchers
-}, enhancer);
+const reducer = combineSliceReducers(TodosReducer, SomeOtherSliceReducer);
+
+export const store = createStore(reducer);
 ```
 ## License
 
