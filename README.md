@@ -131,7 +131,7 @@ For the above example with an empty preloadedState passed to redux, the store wo
     }
 }
 ```
-And after calling `TodosActions.setVisibilityFilter('ACTIVCE')`, `TodosActions.addTodo('Buy Beer')` and `TodosActions.toggleTodo(1)`
+And after calling `TodosActions.setVisibilityFilter('ACTIVE')`, `TodosActions.addTodo('Buy Beer')` and `TodosActions.toggleTodo(1)`
 it would look like this:
 ```js
  {
