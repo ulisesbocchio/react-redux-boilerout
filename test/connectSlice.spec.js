@@ -26,6 +26,39 @@ describe('Connect Slice Reducers Tests', () => {
     expect(componentWrapper).toHaveLength(1);
   });
 
+  it('checks connectSlice creates a container which renders correctly using a reducer instance', () => {
+    const SillyComp = ({ message }) => <div id="silly">{message}</div>;
+    class SampleReducerClass {}
+
+    const SampleReducer = sliceReducer('sample')(SampleReducerClass);
+    const reducer = combineSliceReducers(SampleReducer);
+    const store = createStore(reducer);
+    const Container = connectSlice({
+      slice: new SampleReducer()
+    })(SillyComp);
+
+    const providerWrapper = mount(<Provider store={store}><Container /></Provider>);
+    expect(providerWrapper).toHaveLength(1);
+
+    const containerWrapper = providerWrapper.find(Container);
+    expect(containerWrapper).toHaveLength(1);
+
+    const componentWrapper = containerWrapper.find(SillyComp);
+    expect(componentWrapper).toHaveLength(1);
+  });
+
+  it('checks connectSlice fails if no slice is passed', () => {
+    const SillyComp = ({ message }) => <div id="silly">{message}</div>;
+    class SampleReducerClass {}
+
+    const SampleReducer = sliceReducer('sample')(SampleReducerClass);
+    const reducer = combineSliceReducers(SampleReducer);
+    const store = createStore(reducer);
+    expect( () => connectSlice({
+      slice: null
+    })(SillyComp)).toThrow(/Invalid 'slice'/);
+  });
+
   it('checks connectSlice injects regular initialState correctly', () => {
     const SillyComp = ({ message }) => <div id="silly">{message}</div>;
     class SampleReducerClass {

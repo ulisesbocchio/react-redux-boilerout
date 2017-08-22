@@ -18,18 +18,28 @@ describe('Slice Reducer Tests', () => {
   }
 
     it('checks attributes in created object', () => {
-      const reducer = sliceReducer('a')(A);
+      const augmentedReducerClass = sliceReducer('a')(A);
+      const reducer = new augmentedReducerClass();
 
-      expect(reducer).toHaveProperty('slice');
-      expect(reducer).toEqual(expect.any(Function));
-      expect(reducer.slice).toEqual('a');
+      expect(reducer).toBeInstanceOf(A);
+      expect(reducer.slice).toEqual(expect.any(Function));
+      expect(reducer.reducer).toEqual(expect.any(Function));
+      expect(reducer.getInitialState).toEqual(expect.any(Function));
+      expect(reducer.slice()).toEqual('a');
+      expect(reducer.reducer()).toEqual(expect.any(Function));
+      expect(reducer.getInitialState()).toEqual({});
     });
 
   it('checks attributes in created object with class props', () => {
-    const reducer = sliceReducer('b')(B);
+    const augmentedReducerClass = sliceReducer('b')(B);
+    const reducer = new augmentedReducerClass();
 
-    expect(reducer).toHaveProperty('slice');
-    expect(reducer).toEqual(expect.any(Function));
-    expect(reducer.slice).toEqual('b');
+    expect(reducer).toBeInstanceOf(B);
+    expect(reducer.slice).toEqual(expect.any(Function));
+    expect(reducer.reducer).toEqual(expect.any(Function));
+    expect(reducer.getInitialState).toEqual(expect.any(Function));
+    expect(reducer.slice()).toEqual('b');
+    expect(reducer.reducer()).toEqual(expect.any(Function));
+    expect(reducer.getInitialState()).toEqual({});
   });
 });

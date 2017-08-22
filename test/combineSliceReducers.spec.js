@@ -26,12 +26,20 @@ describe('Combine Slice Reducers Tests', () => {
     expect(reducer).toEqual(expect.any(Function));
   });
 
-  it('checks it fails with invalid reducers', () => {
+  it('checks it fails with invalid call', () => {
     const sliceReducers = [
       sliceReducer('a', A),
       sliceReducer('b', B)
     ];
-    expect(() => combineSliceReducers(...sliceReducers)).toThrowError(/Invalid object passed as action reducer/);
+    expect(() => combineSliceReducers(...sliceReducers)).toThrowError(/sliceReducer needs a class as argument/);
+  });
+
+  it('checks it fails with invalid reducers', () => {
+    const sliceReducers = [
+      {},
+      {}
+    ];
+    expect(() => combineSliceReducers(...sliceReducers)).toThrowError(/Invalid object passed as slice reducer/);
   });
 
   it('should map state to keys', () => {

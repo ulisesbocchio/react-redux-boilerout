@@ -2,10 +2,14 @@ import { combineReducers } from 'redux';
 
 export default function combineSliceReducers(...sliceReducers) {
   const reducersMap = Object.assign({}, ...sliceReducers.map(sliceReducer => {
-    if (!sliceReducer.slice) {
-      throw new Error('Invalid object passed as action reducer, make sure you use the sliceReducer function properly')
+    let actualSliceReducer = sliceReducer;
+    if (typeof sliceReducer === 'function') {
+      actualSliceReducer = new sliceReducer();
     }
-    return { [sliceReducer.slice]: sliceReducer }
+    if (typeof actualSliceReducer.slice !== 'function') {
+      throw new Error('Invalid object passed as slice reducer, make sure you use the sliceReducer function properly')
+    }
+    return { [actualSliceReducer.slice()]: actualSliceReducer.reducer() }
   }));
   return combineReducers(reducersMap);
 }
