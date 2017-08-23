@@ -4,11 +4,11 @@ describe('Combine Slice Reducers Tests', () => {
   class A {
     static initialState() {return 999}
     one(){return 1}
-    two(a){return a}
+    two(state, a){return a}
   }
 
   class B {
-    three(a, b){return a + b}
+    three(state, a, b){return a + b}
     four(){return 4}
     onTwo() {return 'magic'}
   }

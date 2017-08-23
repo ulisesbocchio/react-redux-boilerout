@@ -24,6 +24,6 @@ describe('DynamicSliceReducer Tests', () => {
     expect(dynamicReducer.sliceReducers[0]).toBe(reducerInstance);
 
     dynamicReducer.combinedSlicesReducer({a: {}}, {type: 'someAction', payload: [1,2,3]});
-    expect(reducerInstance.someAction).toHaveBeenCalledWith(1, 2, 3, {});
+    expect(reducerInstance.someAction).toHaveBeenCalledWith({}, 1, 2, 3);
   });
 });

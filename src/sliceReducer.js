@@ -24,7 +24,7 @@ return mixin({
         }
         const reducerMethod = findMethod(action);
         if (reducerMethod) {
-          return this[reducerMethod](...action.payload, sliceState);
+          return this[reducerMethod](sliceState, ...action.payload);
         }
         return sliceState;
       }

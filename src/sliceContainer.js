@@ -8,8 +8,8 @@ export default function sliceContainer({slice, actions, component}) {
     }
 
     const inject = containerClass.inject && containerClass.inject();
-    const mapSliceStateToProps = containerClass.mapSliceStateToProps;
-    const mapDispatchToProps = containerClass.mapDispatchToProps;
+    const mapSliceStateToProps = containerClass.mapSliceStateToProps && containerClass.mapSliceStateToProps.bind(containerClass);
+    const mapDispatchToProps = containerClass.mapDispatchToProps && containerClass.mapDispatchToProps.bind(containerClass);
 
     return connectSlice({ slice, actions, inject }, mapSliceStateToProps, mapDispatchToProps)(component);
   };
