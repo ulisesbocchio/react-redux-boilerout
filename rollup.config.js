@@ -24,7 +24,11 @@ const config = {
   plugins: [
     nodeResolve(),
     babel({
-      exclude: '**/node_modules/**'
+      babelrc: false,
+      exclude: '**/node_modules/**',
+      plugins: ['external-helpers'],
+      presets: ['es2015-rollup'],
+      externalHelpers: true
     }),
     replace({
       'process.env.NODE_ENV': JSON.stringify(env)

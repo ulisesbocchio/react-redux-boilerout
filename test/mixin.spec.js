@@ -2,8 +2,6 @@ import mixin from '../src/mixin'
 
 describe('Class Mixin Tests', () => {
   class A {
-    constructor() {
-    }
     someMethod(){}
     someOtherMethod(){}
   }

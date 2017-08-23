@@ -1,8 +1,20 @@
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
+import { hoistClassBehavior, hoistFunctionalBehavior } from './hoister';
+import React from 'react';
 
-export default function connectSlice({slice: sliceNameOrSliceReducer, actions, inject}, mapSliceStateToProps, mapDispatchToProps) {
-  return (component) => {
+export default function connectSlice({slice: sliceNameOrSliceReducer, actions, inject, hoist}, mapSliceStateToProps, mapDispatchToProps) {
+  return (targetComponent) => {
+
+    let component = targetComponent;
+
+    if (hoist && component) {
+      if (component.prototype instanceof React.Component) {
+        component = hoistClassBehavior(component, hoist);
+      } else if (typeof component === 'function') {
+        component = hoistFunctionalBehavior(component, hoist);
+      }
+    }
 
     let slice = null;
     if (typeof sliceNameOrSliceReducer === 'string') {

@@ -53,7 +53,7 @@ describe('Connect Slice Reducers Tests', () => {
 
     const SampleReducer = sliceReducer('sample')(SampleReducerClass);
     const reducer = combineSliceReducers(SampleReducer);
-    const store = createStore(reducer);
+    createStore(reducer);
     expect( () => connectSlice({
       slice: null
     })(SillyComp)).toThrow(/Invalid 'slice'/);
