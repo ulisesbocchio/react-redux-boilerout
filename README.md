@@ -89,7 +89,7 @@ class TodosReducer {
         };
     }
 
-    addTodo(text, state) {
+    addTodo(state, text) {
         const items = [...state.items, {
             id: this.lastId++,
             text,
@@ -98,11 +98,11 @@ class TodosReducer {
         return { ...state, items }
     }
 
-    setVisibilityFilter(filter, state) {
+    setVisibilityFilter(state, filter) {
         return { ...state, filter }
     }
 
-    toggleTodo(id, state) {
+    toggleTodo(state, id) {
         const items = [...state.items
             .map(item => item.id === id ? {...item, ...{ completed: !item.completed }} : item)];
         return { ...state, items }
@@ -117,7 +117,7 @@ it will listen to, like you would with `combineReducers`.
 
 The initial state of the **slice** is defined with the special **static** function `initialState`.
 
-Each method of the class receives the arguments passed to the action dispatcher when it was called, and the last argument
+Each method of the class receives the arguments passed to the action dispatcher when it was called, and the FIRST argument
 is the current `state`. The method must then return the new state of the **slice**, just like you would with a regular reducer,
 without mutating the current state of course, instead you need to make sure it's a new instance with the appropriate changes.
 
@@ -308,7 +308,7 @@ Actions.sayHello('E.T.', 'call', 'home');
 the following `action reducer` will transform the state for the slice `earth` when `sayHello` is dispatched:
 ```js
 class EarthReducer {
-    sayHello(who, did, what, state) {
+    sayHello(state, who, did, what) {
         return {...state, messages: [state.messages, `${who} ${did} ${what}`]};
     }
 }
