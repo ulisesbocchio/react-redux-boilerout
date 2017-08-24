@@ -24,9 +24,8 @@ const config = {
   plugins: [
     nodeResolve(),
     babel({
-      babelrc: false,
       exclude: '**/node_modules/**',
-      plugins: ['external-helpers'],
+      plugins: ['transform-es3-property-literals', 'external-helpers'],
       presets: ['es2015-rollup'],
       externalHelpers: true
     }),
@@ -40,7 +39,18 @@ const config = {
 if (env === 'production') {
   config.plugins.push(
     uglify({
+      mangle: {
+        properties: {
+          keep_quoted: true
+        }
+      },
+      output: {
+        quote_keys: true,
+        keep_quoted_props: true,
+        quote_style: 2
+      },
       compress: {
+        properties: false,
         pure_getters: true,
         unsafe: true,
         unsafe_comps: true,
