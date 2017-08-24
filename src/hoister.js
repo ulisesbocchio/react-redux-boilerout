@@ -18,10 +18,10 @@ export function hoistClassBehavior(clazz, behaviour) {
   return clazz;
 }
 
-export function hoistFunctionalBehavior(functionalComponent, behaviour) {
+export function hoistComponentBehavior(functionalComponent, behaviour) {
   class HoistedComponent extends React.Component {
     render() {
-      return functionalComponent(this.props);
+      return React.createElement(functionalComponent, this.props);
     }
   }
   hoistClassBehavior(HoistedComponent, behaviour);

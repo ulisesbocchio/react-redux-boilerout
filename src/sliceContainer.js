@@ -5,8 +5,11 @@ const LIFECYCLE_EVENTS = ['componentWillMount', 'render', 'componentDidMount', '
 function getLifecycleMethods(clazz) {
   const lifecycleBehavior = Reflect.ownKeys(clazz.prototype)
     .filter(method => LIFECYCLE_EVENTS.includes(method));
-  const hoister = {};
+  let hoister;
   for (let property of lifecycleBehavior) {
+    if (!hoister) {
+      hoister = {};
+    }
     Object.defineProperty(hoister, property, Reflect.getOwnPropertyDescriptor(clazz.prototype, property));
   }
   return hoister;
