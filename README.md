@@ -265,6 +265,212 @@ const AppProvider = () => (
 
 export default AppProvider;
 ```
+
+## Like Classes? Take it to the next level with `actionDispatcher` and `sliceContainer`
+
+### Use `actionDispatcher` instead of `generateActionDispatchers`
+
+`TodoActions.js`
+```js
+class TodosActions {
+    
+}
+export default actionDispatcher({
+    dispatch: store.dispatch,
+    actions: ['setVisibilityFilter', 'addTodo', 'TOGGLE_TODO']
+})(TodosActions);
+```
+That's it, you have `dispatch` there so you could add any custom actions you would like also to the Class.
+
+### Use `sliceContainer` instead of `connectSlice`
+
+`TodoListContainer.js`
+```js
+import { sliceContainer } from 'react-redux-boilerout';
+
+class VisibleTodoList {
+
+    componentWillMount() {
+        console.log('Todos Container mounted');
+    }
+
+    static getVisibleTodos = (todos, filter) => {
+        switch (filter) {
+            case 'SHOW_ALL':
+                return todos;
+            case 'SHOW_COMPLETED':
+                return todos.filter(t => t.completed);
+            case 'SHOW_ACTIVE':
+                return todos.filter(t => !t.completed);
+            default:
+                throw new Error('Unknown filter: ' + filter)
+        }
+    };
+
+    static mapSliceStateToProps(state) {
+        return {
+            todos: this.getVisibleTodos(state.items, state.filter)
+        }
+    }
+
+    static inject() {
+
+    }
+}
+export default sliceContainer({ slice: 'todos', actions: TodosActions, component: TodoList })(VisibleTodoList);
+```
+With `sliceContainer`, static methods can to be defined for `mapSliceStateTopProps`, `mapDispatchToProps` and `inject`. Under the hood, `connecetSlice` is used.
+You can also define any of the following React lifecycle methods: `componentWillMount`, `render`, `componentDidMount`, `componentWillReceiveProps`, `shouldComponentUpdate`, `componentWillUpdate`, `componentDidUpdate`, `componentWillUnmount`
+and they will be hoisted into the Container component that will wrap the target `component` specified to `sliceContainer`. In this case, `TodoList`.
+
+## Dynamic reducer registration with `registerSliceReducer` and `DynamicSliceReducer`
+
+One piece of boiler haven't dealt with yet is that every time we add a new Slice to our app we have to go to our `combineSliceReducers` declaration and add the new slicers there:
+
+```js
+const reducer = combineSliceReducers(TodosReducer, AnotherReducer, AndMoreReducer, ThisStartsToSuckReducer, BetterDontForgetToAddHereReducer);
+
+```
+You get the idea. For extreme comfort there's yet another decorator, `registerSliecReducer` and a `DynamicSliceReducer` class that produces a `redux` reducer, and also acts as reducer registry.
+To use it, replace your existing `combineSliceReducers` declaration with:
+
+`redux.js`
+```js
+import { createStore } from 'redux';
+import { DynamicSliceReducer } from 'react-redux-boilerout';
+
+const reducerRegistry = new DynamicSliceReducer();
+const store = createStore(reducerRegistry.reducer());
+
+export {
+    store,
+    reducerRegistry
+}
+```
+Here we export the store and the dynamic slice reducer as the reducer registry.
+Then, on your reducer declaration, you decorate your reducer export with `registerSliceReducer`:
+
+`TodosReducer.js`
+```js
+import { sliceReducer, registerSliceReducer } from 'react-redux-boilerout';
+import { reducerRegistry, store } from './redux';
+
+class TodosReducer {
+    // Class body skipped for brevity
+}
+
+export default registerSliceReducer(store, reducerRegistry)(sliceReducer('todos')(TodosReducer));
+
+```
+`registerSliceReducer` takes 2 arguments: the `store` and the `reducerRegistry` we exported in the first step.
+And last but not least, change the `sliceContainer` or `connectSlice` `slice` property from a `string` with the slice name to the actual `sliceReducer`:
+
+`TodoListContainer.js`
+```js
+import TodosReducer from './TodosReducer';
+//Rest omitted for brevity
+export default sliceContainer({ slice: TodosReducer, actions: TodosActions, component: TodoList })();
+```
+This is required so that something actually imports the `TodosReducer`, otherwise the dynamic reducer registration won't kick in.
+
+## Like Decorators? Take it to the **Ultimate Beast Master** level with ES7 (or 8? or 9?? Who knows!) Decorators (needs `Babel`)
+
+Most of the exports of `react-redux-boilerout` can be used as ES Decorators. This is what the actions, reducer, and container look like with actual decorators:
+
+`TodosActions.js`
+```js
+import { store } from './redux';
+import { actionDispatcher } from 'react-redux-boilerout';
+
+@actionDispatcher({
+    dispatch: store.dispatch,
+    actions: ['setVisibilityFilter', 'addTodo', 'TOGGLE_TODO']
+})
+export default class TodosActions {}
+
+```
+
+`TodosReducer.js`
+```js
+import { sliceReducer, registerSliceReducer } from 'react-redux-boilerout';
+import { reducerRegistry, store } from './redux';
+
+@registerSliceReducer(store, reducerRegistry)
+@sliceReducer('todos')
+export default class TodosReducer {
+    constructor() {
+        this.lastId = 0;
+    }
+
+    static initialState() {
+        return {
+            items: [],
+            filter: 'SHOW_ALL'
+        };
+    }
+
+    addTodo(state, text) {
+        const items = [...state.items, {
+            id: this.lastId++,
+            text,
+            completed: false
+        }];
+        return { ...state, items }
+    }
+
+    setVisibilityFilter(state, filter) {
+        return { ...state, filter }
+    }
+
+    toggleTodo(state, id) {
+        const items = [...state.items
+            .map(item => item.id === id ? {...item, ...{ completed: !item.completed }} : item)];
+        return { ...state, items }
+    }
+}
+
+```
+
+`TodoListContainer.js`
+```js
+import { sliceContainer } from 'react-redux-boilerout';
+import TodosReducer from './TodosReducer';
+
+@sliceContainer({ slice: TodosReducer, actions: TodosActions, component: TodoList })
+export default class VisibleTodoList {
+
+    componentWillMount() {
+        console.log('Todos Container mounted');
+    }
+
+    static getVisibleTodos = (todos, filter) => {
+        switch (filter) {
+            case 'SHOW_ALL':
+                return todos;
+            case 'SHOW_COMPLETED':
+                return todos.filter(t => t.completed);
+            case 'SHOW_ACTIVE':
+                return todos.filter(t => !t.completed);
+            default:
+                throw new Error('Unknown filter: ' + filter)
+        }
+    };
+
+    static mapSliceStateToProps(state) {
+        return {
+            todos: this.getVisibleTodos(state.items, state.filter)
+        }
+    }
+
+    static inject() {
+
+    }
+}
+```
+
+
+Head to [redux-todos#with-dynamic-reducer](https://github.com/ulisesbocchio/redux-todos/tree/with-dynamic-reducer) for fully working example.
+
 ## Example
 
 Head on to [redux-todos](https://github.com/ulisesbocchio/redux-todos) for a working version of `redux`'s [todos](https://github.com/reactjs/redux/tree/master/examples/todos) example implemented
@@ -324,8 +530,8 @@ Higher Order Component that will decorate `TargetComponent` to listen for store 
 mapped by `slice`. Arguments `actions`, `inject`, `mapSliceStateToProps` and `mapStoreDispatchToProps` are optional.
 
 ##### Arguments:
-* slice: **slice name** the target component will map props from.
-* actions: an object generated with `generateActionDispatchers` of which its actions will be injected as props
+* slice: **slice name** that the target component will map props from. Or the actual slice Reducer as exported with `sliceReducer`
+* actions: an object generated with `generateActionDispatchers` or `actionDispatchers` of which its actions will be injected as props
 * inject: any arbitrary object of which its attributes will be injected as props
 * mapSliceStateToProps: function(slice, props): analog to `redux`'s `mapStateToProps` but that will receive only the slice
  mapped by the provided `sliceReducer`. If this function is not provided, the entire slice is mapped to props.
@@ -362,6 +568,95 @@ const reducer = combineSliceReducers(TodosReducer, SomeOtherSliceReducer);
 
 export const store = createStore(reducer);
 ```
+
+### `function actionDispatcher({ dispatch, actions }): <function (TargetClass): <decorated class>>`
+Similar to `generateActionDispatchers` for classes. When called, it returns a decorator that will decorate `TargetClass`
+with the specified `action` methods using the provided `dispatch` function.
+
+**Returns** a decorator to be applied to a class. 
+
+##### Arguments:
+* dispatch: Redux's `dispatch` function
+* actions: An Array of `string` elements for the action names to be generated ass class methods in the `TargetClass`
+* TargetClass: the class to decorate with the specified `actions`
+
+##### Example:
+```js
+@actionDispatcher({
+    dispatch: store.dispatch,
+    actions: ['setVisibilityFilter', 'addTodo', 'TOGGLE_TODO']
+})
+export default class TodosActions {}
+```
+
+### `function sliceContainer({slice, actions, component}): <function (TargetClass): <hoc>>`
+Similar to `connectSlice` for classes. When called, it returns a decorator that will decorate `TargetClass` with the
+specified behavior connecting to the provided `slice`, injecting `actions` into `compoment` and hoisting into the resulting
+`hoc` the provided lifecycle methods.
+
+##### Arguments:
+* slice: **slice name** that the target component will map props from. Or the actual slice Reducer as exported with `sliceReducer`
+* actions: an object generated with `generateActionDispatchers` or `actionDispatchers` of which its actions will be injected as props
+* component: The target component to connect with the store slice.
+* TargetClass: The actual class that will contain the `inject`, `mapDispatchToProps` and `mapSliceStateToProps` static methods, and any other React lifecycle methods.
+
+**Returns** an `hoc` that will wrap the target `component` connected to the specified slice.
+
+##### Example:
+
+```js
+@sliceContainer({ slice: TodosReducer, actions: TodosActions, component: FilterLink })
+export default class FilterLinkContainer {
+    static mapSliceStateToProps = (state, ownProps) => ({
+        active: ownProps.filter === state.filter
+    });
+
+    static mapDispatchToProps = (dispatch, ownProps) => ({
+        onClick: () => {
+            TodosActions.setVisibilityFilter(ownProps.filter);
+        }
+    });
+}
+```
+
+### Class `DynamicSliceReducer`
+Class that acts as reducer registry for dynamic reducers when developers don't want to register their reducers in advance.
+It exports a `reducer` that needs to be registered on redux store creation. Both `store` and `DynamicSliceReducer` instance
+need to be exported for use with `registerSliceReducer`;
+
+##### Example:
+
+```js
+const reducerRegistry = new DynamicSliceReducer();
+const store = createStore(reducerRegistry.reducer(), enhancer);
+
+export {
+    store,
+    reducerRegistry
+}
+```
+
+### `function registerSliceReducer(store, dynamicSliceReducer): <function(TargetClass): TargetClass>`
+Use with `DynamicSliceReducer` when wanting to dynamically register reducers into redux's store. When called, it returns
+a decorator that will register `TargetClass` as a slice reducer into `dynamicSliceReducer` to use with the `store`.
+
+##### Arguments:
+* store: Redux's store.
+* dynamicSliceReducer: an instance of `DynamicSliceReducer` that acts as registry for dynamic reducer registration.
+* TargetClass: the actual slice reducer class as decorated by `sliceReducer`.
+
+**Returns** a decorator to be applied to a slice reducer class. 
+
+##### Example
+
+```js
+@registerSliceReducer(store, reducerRegistry)
+@sliceReducer('todos')
+export default class TodosReducer {
+    // class body omitted for brevity
+}
+```
+
 ## License
 
 MIT ©2017 [Ulises Bocchio](http://github.com/ulisesbocchio)
