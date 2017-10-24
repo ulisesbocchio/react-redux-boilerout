@@ -7,7 +7,7 @@ import uglify from 'rollup-plugin-uglify'
 const env = process.env.NODE_ENV;
 
 const config = {
-  entry: 'src/index.js',
+  input: 'src/index.js',
   external: [
     'react-redux',
     'redux',
@@ -19,8 +19,10 @@ const config = {
     'reselect': 'Reselect',
     'react-redux': 'ReactRedux'
   },
-  format: 'umd',
-  moduleName: 'ReactReduxBoilerOut',
+  output: {
+    format: 'umd',
+  },
+  name: 'ReactReduxBoilerOut',
   plugins: [
     nodeResolve(),
     babel({
