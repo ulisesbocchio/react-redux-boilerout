@@ -1,6 +1,6 @@
 {
   "name": "react-redux-boilerout",
-  "version": "1.0.0",
+  "version": "0.0.4",
   "description": "Boilerplate Eliminator for React apps Using Redux",
   "main": "lib/index.js",
   "module": "es/index.js",
