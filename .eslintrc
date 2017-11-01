@@ -1,5 +1,11 @@
 {
-  "extends": "react-app",
+  "plugins": [
+    "prettier"
+  ],
+  "extends": [
+    "react-app",
+    "prettier"
+  ],
   "rules": {
     "jsx-a11y/href-no-hash": "off",
     "jsx-a11y/anchor-is-valid": [
@@ -8,6 +14,14 @@
         "aspects": [
           "invalidHref"
         ]
+      }
+    ],
+    "prettier/prettier": [
+      "error",
+      {
+        "printWidth": 120,
+        "singleQuote": true,
+        "tabWidth": 4
       }
     ]
   }

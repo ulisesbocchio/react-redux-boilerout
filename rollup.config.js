@@ -57,7 +57,8 @@ if (env === 'production') {
         unsafe: true,
         unsafe_comps: true,
         warnings: false
-      }
+      },
+      keep_fnames: true
     })
   )
 }

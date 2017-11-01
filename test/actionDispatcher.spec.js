@@ -1,25 +1,55 @@
-import actionDispatcher from '../src/actionDispatcher'
+import { actionDispatcher } from '../src/index';
 
 describe('Action Dispatcher Tests', () => {
-  class A {
-  }
+    it('checks action dispatchers creation', () => {
+        class A {}
+        const dispatch = jest.fn();
+        const actions = actionDispatcher({ dispatch, actions: ['someAction'] })(A);
 
-  it('checks action dispatchers creation', () => {
-    const dispatch = jest.fn();
-    const actions = actionDispatcher({ dispatch, actions: ['someAction']})(A);
+        expect(actions).toBe(A);
+        expect(A.someAction).toEqual(expect.any(Function));
+        A.someAction(1, 2, 3);
+        expect(dispatch).toHaveBeenCalledWith(
+            expect.objectContaining({ type: 'someAction', payload: [1, 2, 3], _namespace: 'A' })
+        );
+    });
 
-    expect(actions).toBe(A);
-    expect(A.someAction).toEqual(expect.any(Function));
-    A.someAction(1, 2, 3);
-    expect(dispatch).toHaveBeenCalledWith(expect.objectContaining({ type: 'someAction', payload: [1, 2, 3]}));
-  });
+    it('checks action dispatchers creation with custom namespace', () => {
+        const dispatch = jest.fn();
+        @actionDispatcher({ dispatch, namespace: 'pepe', actions: ['someAction'] })
+        class A {}
 
-  it('should fail no class', () => {
-    expect(() => actionDispatcher({})()).toThrow(/actionDispatcher needs a class/);
-  });
+        expect(A.someAction).toEqual(expect.any(Function));
+        A.someAction(1, 2, 3);
+        expect(dispatch).toHaveBeenCalledWith(
+            expect.objectContaining({ type: 'someAction', payload: [1, 2, 3], _namespace: 'pepe' })
+        );
+    });
 
-  it('should fail no actions', () => {
-    expect(() => actionDispatcher({})(A)).toThrow(/actions needs to be an array/);
-  });
+    it('should fail no class', () => {
+        expect(() => actionDispatcher({})()).toThrow(/actionDispatcher needs a class/);
+    });
 
+    it('should fail no actions', () => {
+        class A {}
+        expect(() => actionDispatcher({})(A)).toThrow(/actions needs to be an array/);
+    });
+
+    it('should add default namespace to action dispatcher', () => {
+        const dispatch = jest.fn();
+
+        @actionDispatcher({ dispatch, actions: ['someAction'] })
+        class B {}
+
+        expect(B.namespace).toEqual('B');
+    });
+
+    it('should add custom namespace to action dispatcher', () => {
+        const dispatch = jest.fn();
+
+        @actionDispatcher({ dispatch, namespace: 'pepe', actions: ['someAction'] })
+        class B {}
+
+        expect(B.namespace).toEqual('pepe');
+    });
 });

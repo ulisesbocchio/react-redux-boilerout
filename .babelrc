@@ -1,12 +1,12 @@
 {
   "plugins": [
-    "transform-decorators-legacy",
     ["transform-es2015-template-literals", { "loose": true }],
     "transform-es2015-literals",
     "transform-es2015-function-name",
     "transform-es2015-arrow-functions",
     "transform-es2015-block-scoped-functions",
-    ["transform-class-properties", { "spec": true }],
+    "transform-decorators-legacy",
+    "transform-class-properties",
     ["transform-es2015-classes", { "loose": true }],
     "transform-es2015-object-super",
     "transform-es2015-shorthand-properties",
@@ -29,6 +29,11 @@
     "commonjs": {
       "plugins": [
         ["transform-es2015-modules-commonjs", { "loose": true }]
+      ]
+    },
+    "test": {
+      "plugins": [
+          ["transform-es2015-modules-commonjs", { "loose": true }]
       ]
     },
     "es": {

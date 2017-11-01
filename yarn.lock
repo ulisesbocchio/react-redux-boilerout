@@ -1736,6 +1736,12 @@ escodegen@^1.6.1:
   optionalDependencies:
     source-map "~0.5.6"
 
+eslint-config-prettier@2.6.0:
+  version "2.6.0"
+  resolved "https://nexus3-cicd-alice.os.studio.disney.com/repository/npm/eslint-config-prettier/-/eslint-config-prettier-2.6.0.tgz#f21db0ebb438ad678fb98946097c4bb198befccc"
+  dependencies:
+    get-stdin "^5.0.1"
+
 eslint-config-react-app@2.0.1:
   version "2.0.1"
   resolved "https://nexus3-cicd-alice.os.studio.disney.com/repository/npm/eslint-config-react-app/-/eslint-config-react-app-2.0.1.tgz#fd0503da01ae608f0c6ae8861de084975142230e"
@@ -1786,6 +1792,13 @@ eslint-plugin-jsx-a11y@6.0.2:
     damerau-levenshtein "^1.0.0"
     emoji-regex "^6.1.0"
     jsx-ast-utils "^1.4.0"
+
+eslint-plugin-prettier@2.3.1:
+  version "2.3.1"
+  resolved "https://nexus3-cicd-alice.os.studio.disney.com/repository/npm/eslint-plugin-prettier/-/eslint-plugin-prettier-2.3.1.tgz#e7a746c67e716f335274b88295a9ead9f544e44d"
+  dependencies:
+    fast-diff "^1.1.1"
+    jest-docblock "^21.0.0"
 
 eslint-plugin-react@7.4.0:
   version "7.4.0"
@@ -1967,6 +1980,10 @@ extsprintf@1.3.0, extsprintf@^1.2.0:
 fast-deep-equal@^1.0.0:
   version "1.0.0"
   resolved "https://nexus3-cicd-alice.os.studio.disney.com/repository/npm/fast-deep-equal/-/fast-deep-equal-1.0.0.tgz#96256a3bc975595eb36d82e9929d060d893439ff"
+
+fast-diff@^1.1.1:
+  version "1.1.2"
+  resolved "https://nexus3-cicd-alice.os.studio.disney.com/repository/npm/fast-diff/-/fast-diff-1.1.2.tgz#4b62c42b8e03de3f848460b639079920695d0154"
 
 fast-levenshtein@~2.0.4:
   version "2.0.6"
@@ -3000,7 +3017,7 @@ jest-diff@^21.2.1:
     jest-get-type "^21.2.0"
     pretty-format "^21.2.1"
 
-jest-docblock@^21.2.0:
+jest-docblock@^21.0.0, jest-docblock@^21.2.0:
   version "21.2.0"
   resolved "https://nexus3-cicd-alice.os.studio.disney.com/repository/npm/jest-docblock/-/jest-docblock-21.2.0.tgz#51529c3b30d5fd159da60c27ceedc195faf8d414"
 
@@ -4352,6 +4369,10 @@ preserve@^0.2.0:
   version "0.2.0"
   resolved "https://nexus3-cicd-alice.os.studio.disney.com/repository/npm/preserve/-/preserve-0.2.0.tgz#815ed1f6ebc65926f865b310c0713bcb3315ce4b"
 
+prettier@1.7.4:
+  version "1.7.4"
+  resolved "https://nexus3-cicd-alice.os.studio.disney.com/repository/npm/prettier/-/prettier-1.7.4.tgz#5e8624ae9363c80f95ec644584ecdf55d74f93fa"
+
 pretty-format@^21.2.1:
   version "21.2.1"
   resolved "https://nexus3-cicd-alice.os.studio.disney.com/repository/npm/pretty-format/-/pretty-format-21.2.1.tgz#ae5407f3cf21066cd011aa1ba5fce7b6a2eddb36"
@@ -5151,6 +5172,12 @@ sorted-union-stream@~2.1.3:
     from2 "^1.3.0"
     stream-iterate "^1.1.0"
 
+source-map-support@0.5.0:
+  version "0.5.0"
+  resolved "https://nexus3-cicd-alice.os.studio.disney.com/repository/npm/source-map-support/-/source-map-support-0.5.0.tgz#2018a7ad2bdf8faf2691e5fddab26bed5a2bacab"
+  dependencies:
+    source-map "^0.6.0"
+
 source-map-support@^0.4.15:
   version "0.4.18"
   resolved "https://nexus3-cicd-alice.os.studio.disney.com/repository/npm/source-map-support/-/source-map-support-0.4.18.tgz#0286a6de8be42641338594e97ccea75f0a2c585f"
@@ -5167,7 +5194,7 @@ source-map@^0.5.3, source-map@^0.5.6, source-map@~0.5.0, source-map@~0.5.1, sour
   version "0.5.7"
   resolved "https://nexus3-cicd-alice.os.studio.disney.com/repository/npm/source-map/-/source-map-0.5.7.tgz#8a039d2d1021d22d1ea14c80d8ea468ba2ef3fcc"
 
-source-map@~0.6.1:
+source-map@^0.6.0, source-map@~0.6.1:
   version "0.6.1"
   resolved "https://nexus3-cicd-alice.os.studio.disney.com/repository/npm/source-map/-/source-map-0.6.1.tgz#74722af32e9614e9c287a8d0bbde48b5e2f1a263"
 
