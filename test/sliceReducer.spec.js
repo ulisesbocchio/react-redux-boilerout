@@ -75,6 +75,38 @@ describe('Slice Reducer Tests', () => {
         expect(slice.blah).toHaveBeenCalledWith({}, 1, 2, 3);
     });
 
+    it('checks sliceReducer gets called with class subscribe namespace on method', () => {
+        @subscribe({ namespace: 'todos' })
+        @sliceReducer('b')
+        class B {
+            @subscribe({ action: 'onSomeAction' })
+            blah = jest.fn();
+        }
+
+        const slice = new B();
+        const reducer = slice.reducer();
+        slice.blah.mockImplementation(s => s);
+        reducer({}, { type: 'onSomeAction', payload: [1, 2, 3], _namespace: 'todos' });
+        reducer({}, { type: 'onSomeAction', payload: [1, 2, 3], _namespace: 'not_the_one_subscribed' });
+        expect(slice.blah).toHaveBeenCalledWith({}, 1, 2, 3);
+    });
+
+    it('checks sliceReducer gets called only for override subscribe', () => {
+        @subscribe({ namespace: 'todos' })
+        @sliceReducer('b')
+        class B {
+            @subscribe({ action: 'onSomeAction', namespace: 'notodo' })
+            blah = jest.fn();
+        }
+
+        const slice = new B();
+        const reducer = slice.reducer();
+        slice.blah.mockImplementation(s => s);
+        reducer({}, { type: 'onSomeAction', payload: [1, 2, 3], _namespace: 'notodo' });
+        reducer({}, { type: 'onSomeAction', payload: [5, 6, 7], _namespace: 'todos' });
+        expect(slice.blah).toHaveBeenCalledWith({}, 1, 2, 3);
+    });
+
     it("checks sliceReducer doesn't get called with subscribe namespace on class", () => {
         @subscribe({ namespace: 'todos' })
         @sliceReducer('b')
