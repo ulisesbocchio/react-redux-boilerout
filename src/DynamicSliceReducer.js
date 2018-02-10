@@ -3,7 +3,7 @@ import combineSliceReducers from './combineSliceReducers';
 export default class DynamicSliceReducer {
     constructor() {
         this.sliceReducers = [];
-        this.combinedSlicesReducer = s => s;
+        this.combinedSlicesReducer = s => s || {};
     }
 
     register(sliceReducer) {

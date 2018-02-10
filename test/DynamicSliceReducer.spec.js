@@ -5,6 +5,7 @@ describe('DynamicSliceReducer Tests', () => {
         const dynamicReducer = new DynamicSliceReducer();
         const reducer = dynamicReducer.reducer();
         expect(reducer('a')).toBe('a');
+        expect(reducer()).toEqual({});
     });
 
     it('checks registration', () => {

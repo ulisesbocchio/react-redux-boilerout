@@ -20,8 +20,8 @@ function normalizeActionName(type) {
     return type;
 }
 
-function actionDispatcher(dispatch, actionCreator) {
-    const dispatchAction = (...args) => dispatch(actionCreator(...args));
+function actionDispatcher(dispatchHolder, actionCreator) {
+    const dispatchAction = (...args) => dispatchHolder()(actionCreator(...args));
     dispatchAction.defer = (...args) => setTimeout(() => dispatchAction(...args));
     return dispatchAction;
 }
@@ -36,13 +36,15 @@ function createActionCreator(action, _namespace) {
     });
 }
 
-export default function generateActionDispatchers({ dispatch = getDispatch(), options = {}, actions } = {}) {
-    if (!dispatch || typeof dispatch !== 'function') {
-        throw new Error('dispatch function required');
+export default function generateActionDispatchers({ dispatch, options = {}, actions } = {}) {
+    if (dispatch && typeof dispatch !== 'function') {
+        throw new Error('dispatch needs to be a function');
     }
 
-    if (!actions || !actions.length) {
-        throw new Error('at least one action required');
+    const dispatchHolder = dispatch ? () => dispatch : getDispatch;
+
+    if (!actions || !Array.isArray(actions) || !actions.length) {
+        throw new Error('at least an Array with one action required');
     }
 
     if (actions.some(action => typeof action !== 'string')) {
@@ -56,7 +58,7 @@ export default function generateActionDispatchers({ dispatch = getDispatch(), op
     } = options;
     return Object.assign(
         ...actions.map(action => ({
-            [normalizeActionName(action)]: actionDispatcher(dispatch, createActionCreator(action, namespace))
+            [normalizeActionName(action)]: actionDispatcher(dispatchHolder, createActionCreator(action, namespace))
         })),
         { namespace }
     );

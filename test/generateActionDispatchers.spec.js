@@ -39,11 +39,11 @@ describe('Generate Action Creator Tests', () => {
     });
 
     it('checks that it fails when dispatch is not passed', () => {
-        expect(() => generateActionDispatchers({ actions: 'update' })).toThrowError(/dispatch function required/);
+        expect(() => generateActionDispatchers({ actions: 'update' })).toThrowError(/Array with one action required/);
     });
 
     it('checks that it fails when no arg is passed', () => {
-        expect(() => generateActionDispatchers()).toThrowError(/dispatch function required/);
+        expect(() => generateActionDispatchers()).toThrowError(/Array with one action required/);
     });
 
     it('checks that it DOES NOT fail when dispatch is not passed, and dispatch from storeHolder is populated', () => {
@@ -56,12 +56,12 @@ describe('Generate Action Creator Tests', () => {
 
     it('checks that it fails when dispatch is not a function', () => {
         expect(() => generateActionDispatchers({ dispatch: {}, actions: 'update' })).toThrowError(
-            /dispatch function required/
+            /dispatch needs to be a function/
         );
     });
 
     it('checks that it fails when no actions are passed', () => {
-        expect(() => generateActionDispatchers({ dispatch: () => {} })).toThrowError(/at least one action/);
+        expect(() => generateActionDispatchers({ dispatch: () => {} })).toThrowError(/Array with one action required/);
     });
 
     it('checks that it fails when action is not a string', () => {
@@ -78,6 +78,29 @@ describe('Generate Action Creator Tests', () => {
         expect(!!namespace).toEqual(true);
         expect(actionDispatchers).toHaveProperty('update');
         actionDispatchers.update('arg0');
+        expect(action).toMatchObject({
+            type: 'update',
+            payload: ['arg0'],
+            variants: ['update', 'onUpdate'],
+            _namespace: namespace
+        });
+    });
+
+    it('checks regular action creator function is there and returns, when using storeHolder', () => {
+        let action = null;
+        const createStore = () => ({
+            dispatch(a) {
+                action = a;
+            }
+        });
+        storeHolder(createStore)();
+        const actionDispatchers = generateActionDispatchers({ actions: ['update'] });
+        const namespace = actionDispatchers.namespace;
+        expect(!!namespace).toEqual(true);
+        expect(actionDispatchers).toHaveProperty('update');
+        actionDispatchers.update('arg0');
+        const destroyStore = () => {};
+        storeHolder(destroyStore)();
         expect(action).toMatchObject({
             type: 'update',
             payload: ['arg0'],
