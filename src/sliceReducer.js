@@ -38,7 +38,7 @@ function createMixin(slice) {
             const reducerMethod = this._findMethod(action);
             const namespace = (reducerMethod && this[reducerMethod]._namespace) || this._namespace;
             if (reducerMethod && (!namespace || namespace === action._namespace)) {
-                return this[reducerMethod](sliceState, ...action.payload);
+                return this[reducerMethod](sliceState, ...(action._namespace ? action.payload : [action.payload]));
             }
             return sliceState;
         },

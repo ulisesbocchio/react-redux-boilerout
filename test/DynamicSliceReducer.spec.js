@@ -23,7 +23,7 @@ describe('DynamicSliceReducer Tests', () => {
         expect(dynamicReducer.sliceReducers.length).toBe(1);
         expect(dynamicReducer.sliceReducers[0]).toBe(reducerInstance);
 
-        dynamicReducer.combinedSlicesReducer({ a: {} }, { type: 'someAction', payload: [1, 2, 3] });
+        dynamicReducer.combinedSlicesReducer({ a: {} }, { type: 'someAction', payload: [1, 2, 3], _namespace: 'blah' });
         expect(reducerInstance.someAction).toHaveBeenCalledWith({}, 1, 2, 3);
     });
 });

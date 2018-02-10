@@ -51,16 +51,16 @@ describe('Combine Slice Reducers Tests', () => {
         const sliceReducers = [sliceReducer('a')(A), sliceReducer('b')(B)];
         const reducer = combineSliceReducers(...sliceReducers);
 
-        let newState = reducer({ a: {}, b: {} }, { type: 'one', payload: ['a'] });
+        let newState = reducer({ a: {}, b: {} }, { type: 'one', payload: ['a'], _namespace: 'blah' });
         expect(newState).toEqual({ a: 1, b: {} });
 
-        newState = reducer({ a: {}, b: {} }, { type: 'two', payload: ['a'] });
+        newState = reducer({ a: {}, b: {} }, { type: 'two', payload: ['a'], _namespace: 'blah' });
         expect(newState).toEqual({ a: 'a', b: {} });
 
-        newState = reducer({ a: {}, b: {} }, { type: 'three', payload: [1, 2] });
+        newState = reducer({ a: {}, b: {} }, { type: 'three', payload: [1, 2], _namespace: 'blah' });
         expect(newState).toEqual({ a: {}, b: 3 });
 
-        newState = reducer({ a: {}, b: {} }, { type: 'four', payload: [1, 2] });
+        newState = reducer({ a: {}, b: {} }, { type: 'four', payload: [1, 2], _namespace: 'blah' });
         expect(newState).toEqual({ a: {}, b: 4 });
     });
 
@@ -78,7 +78,7 @@ describe('Combine Slice Reducers Tests', () => {
         const sliceReducers = [sliceReducer('a')(A), sliceReducer('b')(B)];
         const reducer = combineSliceReducers(...sliceReducers);
 
-        const newState = reducer({ a: {}, b: {} }, { type: 'TWO', payload: ['a'], variants: ['two', 'onTwo'] });
+        const newState = reducer({ a: {}, b: {} }, { type: 'TWO', payload: ['a'], variants: ['two', 'onTwo'], _namespace: 'blah' });
         expect(newState).toEqual({ a: 'a', b: 'magic' });
     });
 

@@ -359,7 +359,7 @@ class TodosReducer {
     // Class body skipped for brevity
 }
 
-export default registerSliceReducer(store, reducerRegistry)(sliceReducer('todos')(TodosReducer));
+export default registerSliceReducer({ store, registry: reducerRegistry })(sliceReducer('todos')(TodosReducer));
 
 ```
 `registerSliceReducer` takes 2 arguments: the `store` and the `reducerRegistry` we exported in the first step.
@@ -395,7 +395,7 @@ export default class TodosActions {}
 import { sliceReducer, registerSliceReducer } from 'react-redux-boilerout';
 import { reducerRegistry, store } from './redux';
 
-@registerSliceReducer(store, reducerRegistry)
+@registerSliceReducer({ store, registry: reducerRegistry})
 @sliceReducer('todos')
 export default class TodosReducer {
     constructor() {
@@ -636,9 +636,9 @@ export {
 }
 ```
 
-### `function registerSliceReducer(store, dynamicSliceReducer): <function(TargetClass): TargetClass>`
+### `function registerSliceReducer({ store, registry }): <function(TargetClass): TargetClass>`
 Use with `DynamicSliceReducer` when wanting to dynamically register reducers into redux's store. When called, it returns
-a decorator that will register `TargetClass` as a slice reducer into `dynamicSliceReducer` to use with the `store`.
+a decorator that will register `TargetClass` as a slice reducer into `registry` to use with the `store`.
 
 ##### Arguments:
 * store: Redux's store.
@@ -650,7 +650,7 @@ a decorator that will register `TargetClass` as a slice reducer into `dynamicSli
 ##### Example
 
 ```js
-@registerSliceReducer(store, reducerRegistry)
+@registerSliceReducer({ store, registry: reducerRegistry })
 @sliceReducer('todos')
 export default class TodosReducer {
     // class body omitted for brevity

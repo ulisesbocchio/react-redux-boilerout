@@ -15,7 +15,7 @@ describe('registerSliceReducer Tests', () => {
 
         dynamicReducer.register.mockImplementation(a => new a());
 
-        const reducer = registerSliceReducer(store, dynamicReducer)(A);
+        const reducer = registerSliceReducer({ store, registry: dynamicReducer })(A);
         expect(reducer).toBeInstanceOf(A);
         expect(dynamicReducer.register).toHaveBeenCalledWith(A);
         expect(store.dispatch).toHaveBeenCalledWith({ type: '@@boilerout/INIT' });
@@ -29,6 +29,6 @@ describe('registerSliceReducer Tests', () => {
         const store = {
             dispatch: jest.fn()
         };
-        expect(() => registerSliceReducer(store)).toThrow(/undefined is not a DynamicSliceReducer/);
+        expect(() => registerSliceReducer({ store })).toThrow(/undefined is not a DynamicSliceReducer/);
     });
 });
