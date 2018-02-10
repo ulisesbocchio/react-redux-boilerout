@@ -42,11 +42,11 @@ npm install react-redux-boilerout
 import { generateActionDispatchers } from 'react-redux-boilerout';
 import { store } from './redux'; //export your store!
 
-export default generateActionDispatchers(store.dispatch,
-    'setVisibilityFilter',
+export default generateActionDispatchers({ dispatch: store.dispatch,
+    actions: ['setVisibilityFilter',
     'addTodo',
-    'toggleTodo'
-);
+    'toggleTodo']
+});
 ```
 Action dispatchers are created automatically for specified action names so you can do:
 
@@ -478,7 +478,7 @@ using `react-redux-boilerout`.
 
 ## API Docs
 
-### `function generateActionDispatchers(dispatch, ...actions): <object>`
+### `function generateActionDispatchers({dispatch, options, actions}): <object>`
 Generates an object that maps the action names to function properties that are action dispatchers.
 If the actions are in the form of `ACTION_NAME` the dispatcher functions are normalized to the `actionName` form (camelCase).
 For each action, let's say 'sayHello' the resulting function property will also have a `defer` version that will dispatch
@@ -492,7 +492,7 @@ the action asynchronously.
 
 ##### Example:
 ```js
-const Actions = generateActionDispatchers(dispatch, 'SAY_HELLO');
+const Actions = generateActionDispatchers({ dispatch, actions: ['SAY_HELLO']});
 Actions.sayHello('Hi There!'); //dispatch action synchronously
 Actions.sayHello.defer('Hi There!'); //dispatch action asynchronously
 ```

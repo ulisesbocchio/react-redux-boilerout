@@ -12,7 +12,7 @@ export default function actionDispatcher({ dispatch, actions, namespace: provide
         if (!namespace) {
             namespace = clazz.name;
         }
-        Object.assign(clazz, generateActionDispatchers(dispatch, { namespace }, ...actions));
+        Object.assign(clazz, generateActionDispatchers({ dispatch, options: { namespace }, actions }));
         return clazz;
     };
 }

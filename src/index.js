@@ -7,6 +7,7 @@ import combineSliceReducers from './combineSliceReducers';
 import DynamicSliceReducer from './DynamicSliceReducer';
 import registerSliceReducer from './registerSliceReducer';
 import subscribe from './subscribe';
+import storeHolder from './storeHolder';
 
 export {
     generateActionDispatchers,
@@ -17,5 +18,6 @@ export {
     combineSliceReducers,
     DynamicSliceReducer,
     registerSliceReducer,
-    subscribe
+    subscribe,
+    storeHolder
 };

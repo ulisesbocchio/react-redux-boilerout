@@ -1,3 +1,5 @@
+import { getDispatch } from './storeHolder';
+
 function capitalize(s) {
     return s[0].toUpperCase() + s.slice(1);
 }
@@ -34,16 +36,12 @@ function createActionCreator(action, _namespace) {
     });
 }
 
-export default function generateActionDispatchers(dispatch, ...optionsAndActions) {
+export default function generateActionDispatchers({ dispatch = getDispatch(), options = {}, actions } = {}) {
     if (!dispatch || typeof dispatch !== 'function') {
         throw new Error('dispatch function required');
     }
 
-    const [options, ...actions] =
-        optionsAndActions[0] && typeof optionsAndActions[0] !== 'string'
-            ? optionsAndActions
-            : [{}, ...optionsAndActions];
-    if (!actions.length) {
+    if (!actions || !actions.length) {
         throw new Error('at least one action required');
     }
 
