@@ -23,7 +23,7 @@ function getLifecycleMethods(clazz) {
     return hoister;
 }
 
-export default function sliceContainer({ slice, actions, component }) {
+export default function sliceContainer({ slice, actions, component, mergeProps, connectOptions }) {
     return containerClass => {
         if (typeof containerClass !== 'function') {
             throw new Error('sliceContainer needs a class');
@@ -37,6 +37,12 @@ export default function sliceContainer({ slice, actions, component }) {
         const mapDispatchToProps =
             containerClass.mapDispatchToProps && containerClass.mapDispatchToProps.bind(containerClass);
 
-        return connectSlice({ slice, actions, inject, hoist }, mapSliceStateToProps, mapDispatchToProps)(component);
+        return connectSlice(
+            { slice, actions, inject, hoist },
+            mapSliceStateToProps,
+            mapDispatchToProps,
+            mergeProps,
+            connectOptions
+        )(component);
     };
 }

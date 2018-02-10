@@ -78,7 +78,10 @@ describe('Combine Slice Reducers Tests', () => {
         const sliceReducers = [sliceReducer('a')(A), sliceReducer('b')(B)];
         const reducer = combineSliceReducers(...sliceReducers);
 
-        const newState = reducer({ a: {}, b: {} }, { type: 'TWO', payload: ['a'], variants: ['two', 'onTwo'], _namespace: 'blah' });
+        const newState = reducer(
+            { a: {}, b: {} },
+            { type: 'TWO', payload: ['a'], variants: ['two', 'onTwo'], _namespace: 'blah' }
+        );
         expect(newState).toEqual({ a: 'a', b: 'magic' });
     });
 

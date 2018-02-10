@@ -13,5 +13,5 @@ export default function storeHolder(createStore) {
         const newStore = createStore(...args);
         store = newStore;
         return newStore;
-    }
+    };
 }

@@ -18,14 +18,15 @@ export function hoistClassBehavior(clazz, behaviour) {
     return clazz;
 }
 
-export function hoistComponentBehavior(functionalComponent, behaviour) {
+export function hoistComponentBehavior(component, behaviour) {
     class HoistedComponent extends React.Component {
         render() {
-            return React.createElement(functionalComponent, this.props);
+            return React.createElement(component, this.props);
         }
     }
     hoistClassBehavior(HoistedComponent, behaviour);
-    HoistedComponent.propTypes = functionalComponent.propTypes;
-    HoistedComponent.defaultProps = functionalComponent.defaultProps;
+    HoistedComponent.propTypes = component.propTypes;
+    HoistedComponent.defaultProps = component.defaultProps;
+    HoistedComponent.displayName = `HoistedComponent(${component.displayName || component.name || 'Component'})`;
     return HoistedComponent;
 }

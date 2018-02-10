@@ -1,4 +1,4 @@
-import { registerSliceReducer, DynamicSliceReducer } from '../src';
+import { registerSliceReducer, DynamicSliceReducer, storeHolder } from '../src';
 
 class A {
     someMethod() {}
@@ -16,6 +16,27 @@ describe('registerSliceReducer Tests', () => {
         dynamicReducer.register.mockImplementation(a => new a());
 
         const reducer = registerSliceReducer({ store, registry: dynamicReducer })(A);
+        expect(reducer).toBeInstanceOf(A);
+        expect(dynamicReducer.register).toHaveBeenCalledWith(A);
+        expect(store.dispatch).toHaveBeenCalledWith({ type: '@@boilerout/INIT' });
+    });
+
+    it('checks slice reducer registration with store registered through storeHolder', () => {
+        const store = {
+            dispatch: jest.fn()
+        };
+        const createStore = () => store;
+        storeHolder(createStore)();
+        const dynamicReducer = new DynamicSliceReducer();
+
+        dynamicReducer.register = jest.fn();
+        dynamicReducer.register.mockImplementation(a => new a());
+
+        const reducer = registerSliceReducer({ registry: dynamicReducer })(A);
+
+        const destroyStore = () => {};
+        storeHolder(destroyStore)();
+
         expect(reducer).toBeInstanceOf(A);
         expect(dynamicReducer.register).toHaveBeenCalledWith(A);
         expect(store.dispatch).toHaveBeenCalledWith({ type: '@@boilerout/INIT' });

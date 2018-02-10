@@ -5,7 +5,9 @@ import { hoistComponentBehavior } from './hoister';
 export default function connectSlice(
     { slice: sliceNameOrSliceReducer, actions, inject, hoist },
     mapSliceStateToProps,
-    mapDispatchToProps
+    mapDispatchToProps,
+    mergeProps,
+    connectOptions
 ) {
     return targetComponent => {
         let component = targetComponent;
@@ -40,6 +42,6 @@ export default function connectSlice(
         //eslint-disable-next-line no-unused-vars
         const mapDispatchToPropsCreator = () => createSelector([(d, p) => d, (d, p) => p], mapActualDispatchToProps);
 
-        return connect(mapStateToPropsCreator, mapDispatchToPropsCreator)(component);
+        return connect(mapStateToPropsCreator, mapDispatchToPropsCreator, mergeProps, connectOptions)(component);
     };
 }
