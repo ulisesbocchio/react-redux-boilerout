@@ -1,7 +1,6 @@
 import DynamicSliceReducer from './DynamicSliceReducer';
-import { getStore } from './storeHolder';
 
-export default function({ store = getStore(), registry } = {}) {
+export default function({ store, registry } = {}) {
     if (!store || typeof store.dispatch !== 'function') {
         throw new Error('Invalid store object');
     }

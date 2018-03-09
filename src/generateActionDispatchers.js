@@ -1,5 +1,3 @@
-import { getDispatch } from './storeHolder';
-
 function capitalize(s) {
     return s[0].toUpperCase() + s.slice(1);
 }
@@ -20,8 +18,8 @@ function normalizeActionName(type) {
     return type;
 }
 
-function actionDispatcher(dispatchHolder, actionCreator) {
-    const dispatchAction = (...args) => dispatchHolder()(actionCreator(...args));
+function actionDispatcher(dispatch, actionCreator) {
+    const dispatchAction = (...args) => dispatch(actionCreator(...args));
     dispatchAction.defer = (...args) => setTimeout(() => dispatchAction(...args));
     return dispatchAction;
 }
@@ -37,11 +35,9 @@ function createActionCreator(action, _namespace) {
 }
 
 export default function generateActionDispatchers({ dispatch, options = {}, actions } = {}) {
-    if (dispatch && typeof dispatch !== 'function') {
+    if (!dispatch || typeof dispatch !== 'function') {
         throw new Error('dispatch needs to be a function');
     }
-
-    const dispatchHolder = dispatch ? () => dispatch : getDispatch;
 
     if (!actions || !Array.isArray(actions) || !actions.length) {
         throw new Error('at least an Array with one action required');
@@ -58,7 +54,7 @@ export default function generateActionDispatchers({ dispatch, options = {}, acti
     } = options;
     return Object.assign(
         ...actions.map(action => ({
-            [normalizeActionName(action)]: actionDispatcher(dispatchHolder, createActionCreator(action, namespace))
+            [normalizeActionName(action)]: actionDispatcher(dispatch, createActionCreator(action, namespace))
         })),
         { namespace }
     );
