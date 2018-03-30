@@ -1,7 +1,7 @@
 import combineSliceReducers from './combineSliceReducers';
 import registerSliceReducer from './registerSliceReducer';
 import actionDispatcher from './actionDispatcher';
-import storeHolder from './storeHolder';
+import sliceContainer from './sliceContainer';
 
 export default class DynamicSliceReducer {
     constructor() {
@@ -14,20 +14,31 @@ export default class DynamicSliceReducer {
 
     get registerSliceReducer() {
         return ({ ...opts }) => registerSliceReducer({
-            store: storeHolder.getStore(this),
+            store: this.store,
             ...opts
         })
     }
 
     get actionDispatcher() {
         return ({ ...opts }) => actionDispatcher({
-            dispatch: (...args) => storeHolder.getDispatch(this)(...args),
+            dispatch: (...args) => this.store.dispatch(...args),
             ...opts
         })
     }
 
     get enhancer() {
-        return storeHolder(this);
+        const _this = this;
+        return function storeHolderEnhancer(createStore) {
+            return (...args) => {
+                const newStore = createStore(...args);
+                _this.store = newStore;
+                return newStore;
+            };
+        }
+    }
+
+    get sliceContainer() {
+        return sliceContainer
     }
 
     register(sliceReducer) {
